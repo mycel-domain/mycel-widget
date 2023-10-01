@@ -1,0 +1,40 @@
+import type { Network } from '../shared';
+
+import { Networks } from '../shared';
+
+type Provider = Map<Network, any>;
+
+export function bitgetInstances(): Provider | null {
+  const instances: Provider = new Map();
+  const { bitkeep } = window;
+
+  if (!bitkeep) {
+    return null;
+  }
+
+  if (bitkeep.ethereum) {
+    instances.set(Networks.ETHEREUM, bitkeep.ethereum);
+  }
+
+  if (bitkeep.solana) {
+    instances.set(Networks.SOLANA, bitkeep.solana);
+  }
+
+  if (bitkeep.aptos) {
+    instances.set(Networks.APTOS, bitkeep.aptos);
+  }
+
+  if (bitkeep.suiWallet) {
+    instances.set(Networks.SUI, bitkeep.suiWallet);
+  }
+
+  // if (bitkeep.tronLink) {
+  //   instances.set(Networks.TRON, bitkeep.tronLink);
+  // }
+
+  if (instances.size === 0) {
+    return null;
+  }
+
+  return instances;
+}

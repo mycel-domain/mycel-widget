@@ -1,0 +1,137 @@
+import { WalletType } from "../wallets/shared";
+import { ProviderInterface } from "../wallets/react";
+import { Asset } from "./api/main";
+
+/**
+ * The above type defines a set of optional color properties for a widget.
+ * @property {string} background
+ * @property {string} foreground
+ * @property {string} primary
+ * @property {string} success
+ * @property {string} error
+ * @property {string} warning
+ * @property {string} surface
+ * @property {string} neutral
+
+ */
+export type WidgetColors = {
+  background?: string;
+  foreground?: string;
+  primary?: string;
+  success?: string;
+  error?: string;
+  warning?: string;
+  surface?: string;
+  neutral?: string;
+};
+
+/**
+ * The `WidgetTheme` defines the properties of a widget theme, including mode, font family, colors, border
+ * radius, width, and height.
+ * @property {'auto' | 'light' | 'dark'} mode - The mode property is used to specify the default theme for
+ * the widget.
+ * @property {string} fontFamily - The font family to be used in the widget.
+ * @property {Colors} colors - The `colors` property is a sub-property of the `WidgetTheme` object that
+ * defines the color scheme for the widget. It is of type `Colors`, which is likely another object that
+ * contains specific color values for various parts of the widget (e.g. background color, text color,
+ * border color
+ * @property {number} borderRadius - `borderRadius` is a property of the `WidgetTheme` type that
+ * specifies the radius of the corners of a widget.
+ * @property {number} width - The `width` property is a number that represents the width of the widget.
+ * @property {number} height - The `height` property is a number that specifies the height of the widget.
+ * @property {boolean} singleTheme - The `singleTheme` property is a boolean that specifies the theme is support dark and light or only light.
+ */
+export type WidgetTheme = {
+  mode?: "auto" | "light" | "dark";
+  fontFamily?: string;
+  colors?: { light: WidgetColors; dark: WidgetColors };
+  borderRadius?: number;
+  width?: number;
+  height?: number;
+  singleTheme?: boolean;
+};
+
+/**
+ * If you want to charge users fee per transaction, you should
+ * pass `WidgetAffiliate` including affiliateRef, affiliatePercent, and affiliateWallets.
+ * @property {string | null} ref - To enable dApps to charge affiliate fees and generate income from
+ * users' transactions, the affiliate referral code should be provided. You can create this code by
+ * @property {number | null} percent - If you want to change the default affiliate fee percentage,
+ * you can provide a new value here.
+ * @property {{ [key: string]: string }} wallets - If you want to change the default affiliate wallet
+ *  addresses, you can provide new values here. (Map of route blockchains to affiliate address)
+ */
+export type WidgeAffiliate = {
+  ref?: string;
+  percent?: number;
+  wallets?: { [key: string]: string };
+};
+
+/**
+ * `BlockchainAndTokenConfig`
+ *
+ * @property {string} blockchain - This property is optional and represents the default selected blockchain.
+ * @property {Asset} token - The `token` property is a type of `Asset` and represents the default token
+ * which is selected. e.g. {blockchain: 'BSC', symbol: 'BNB', address: null}
+ * @property {string[]} blockchains - An optional array of strings representing the supported
+ * blockchains. e.g. ['BSC','ETHEREUM']
+ * @property {Asset[]} tokens - The `tokens` property is an optional array of `Asset` objects that
+ * you could use that to limit tokens to some limited ones.
+ */
+export type BlockchainAndTokenConfig = {
+  blockchain?: string;
+  token?: Asset;
+  blockchains?: string[];
+  tokens?: Asset[];
+};
+
+/**
+ * The type WidgetConfig defines the configuration options for a widget, including API key, affiliate
+ * reference, amount, blockchain and token configurations, liquidity sources, wallet types, language,
+ * and theme.
+ *
+ * @property {string} apiKey - The API key used to communicate with Mycel API
+ * @property {WidgeAffiliate} affiliate - If you want to charge users fee per transaction, you should
+ * pass `WidgetAffiliate` including affiliateRef, affiliatePercent, and affiliateWallets.
+ * @property {number} amount - The default input amount.
+ * @property {BlockchainAndTokenConfig} from - The `from` property is an optional property of type
+ * `BlockchainAndTokenConfig` that specifies the default blockchain and token from which the user wants to
+ * exchange.It can also used to limit source swap blockchains/tokens to some limited ones.
+ * @property {BlockchainAndTokenConfig} to - The "to" property is an optional property of type
+ * "BlockchainAndTokenConfig" that specifies the default blockchain and token to which the user wants to
+ * exchange.It can also used to limit destination swap blockchains/tokens to some limited ones.
+ * blockchain during the transaction.
+ * @property {string[]} liquiditySources - The `liquiditySources` property is an optional array of
+ * strings that specifies the liquidity sources allowed dexes and bridges for the routing
+ * @property {WalletType[]} wallets - The `wallets` property is an optional array of `WalletType`
+ * values that represent the types of wallets that the widget should support. For example, it could
+ * include values like `"metamask"`, `"kepler"`, or `"phantom"`.
+ * @property {boolean} multiWallets - The `multiWallets` property is a boolean value that indicates
+ * whether the widget should allow the user to select multiple wallets for the transaction.
+ * @property {boolean} customDestination - A boolean value indicating whether the user can input a custom
+ * address for the transaction. If set to true, the widget will allow the user to input a custom
+ * address for the destination.
+ * @property {string} language - The language property is an optional string that specifies the
+ * default language in which the widget should be displayed. If not provided, the widget will default to the
+ * language of the user's browser.
+ * @property {WidgetTheme} theme - The `theme` property is a part of the `WidgetConfig` type and is
+ * used to specify the visual theme of the widget. It is of type `WidgetTheme`, which is an interface
+ * that defines the various properties of the theme, such as colors, fonts, and others.
+ * @property {boolean} externalWallets
+ * If `externalWallets` is `true`, you should add `WidgetWallets` to your app.
+
+ */
+export type WidgetConfig = {
+  apiKey: string;
+  walletConnectProjectId?: string;
+  affiliate?: WidgeAffiliate;
+  amount?: number;
+  from?: BlockchainAndTokenConfig;
+  to?: BlockchainAndTokenConfig;
+  liquiditySources?: string[];
+  wallets?: (WalletType | ProviderInterface)[];
+  multiWallets?: boolean;
+  customDestination?: boolean;
+  theme?: WidgetTheme;
+  externalWallets?: boolean;
+};
