@@ -4,13 +4,17 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "outDir": "dist",
+    "rootDir": "./src",
 
     /* Bundler mode */
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "./types",
+    "jsx": "react",
 
     /* Linting */
     "strict": true,
@@ -19,5 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "allowJs": true
   },
-  "include": ["src", "types", "tsdx.config.js"]
+  "include": ["src", "types"]
 }
