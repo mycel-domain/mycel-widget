@@ -100,7 +100,7 @@ export const config = {
       },
     ],
   },
-  wallets: ["metamask", "bitget"],
+  wallets: ["metamask", "bitget", "okx", "petra", "sui"],
   theme: {
     mode: "dark",
     colors: {

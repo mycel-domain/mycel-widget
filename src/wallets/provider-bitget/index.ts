@@ -93,56 +93,64 @@ export const subscribe: Subscribe = (options) => {
   const aptosInstance = chooseInstance(instance, meta, Networks.APTOS);
   const suiInstance = chooseInstance(instance, meta, Networks.SUI);
 
-  ethInstance?.on("accountsChanged", (addresses: string[]) => {
-    const eth_chainId = meta
-      .filter(isEvmBlockchain)
-      .find((blockchain) => blockchain.name === Networks.ETHEREUM)?.chainId;
-    if (state.connected) {
-      if (state.network != Networks.ETHEREUM && eth_chainId) {
-        updateChainId(eth_chainId);
+  if (ethInstance) {
+    ethInstance?.on("accountsChanged", (addresses: string[]) => {
+      const eth_chainId = meta
+        .filter(isEvmBlockchain)
+        .find((blockchain) => blockchain.name === Networks.ETHEREUM)?.chainId;
+      if (state.connected) {
+        if (state.network != Networks.ETHEREUM && eth_chainId) {
+          updateChainId(eth_chainId);
+        }
+        updateAccounts(addresses);
       }
-      updateAccounts(addresses);
-    }
-  });
+    });
+  }
 
-  solanaInstance?.on("accountChanged", async (publicKey: string) => {
-    if (state.network != Networks.SOLANA) {
-      updateChainId(meta.filter(isSolanaBlockchain)[0].chainId);
-    }
-    const network = Networks.SOLANA;
-    if (publicKey) {
-      const account = publicKey.toString();
-      updateAccounts([account]);
-    } else {
-      connect(network);
-    }
-  });
+  if (solanaInstance) {
+    solanaInstance?.on("accountChanged", async (publicKey: string) => {
+      if (state.network != Networks.SOLANA) {
+        updateChainId(meta.filter(isSolanaBlockchain)[0].chainId);
+      }
+      const network = Networks.SOLANA;
+      if (publicKey) {
+        const account = publicKey.toString();
+        updateAccounts([account]);
+      } else {
+        connect(network);
+      }
+    });
+  }
 
-  aptosInstance?.on("accountChanged", async (publicKey: string) => {
-    if (state.network != Networks.APTOS) {
-      updateChainId(meta.filter(isAptosBlockchain)[0].chainId);
-    }
-    const network = Networks.APTOS;
-    if (publicKey) {
-      const account = publicKey.toString();
-      updateAccounts([account]);
-    } else {
-      connect(network);
-    }
-  });
+  if (aptosInstance) {
+    aptosInstance?.on("accountChanged", async (publicKey: string) => {
+      if (state.network != Networks.APTOS) {
+        updateChainId(meta.filter(isAptosBlockchain)[0].chainId);
+      }
+      const network = Networks.APTOS;
+      if (publicKey) {
+        const account = publicKey.toString();
+        updateAccounts([account]);
+      } else {
+        connect(network);
+      }
+    });
+  }
 
-  suiInstance?.on("accountChanged", async (publicKey: string) => {
-    if (state.network != Networks.SUI) {
-      updateChainId(meta.filter(isSuiBlockchain)[0].chainId);
-    }
-    const network = Networks.SUI;
-    if (publicKey) {
-      const account = publicKey.toString();
-      updateAccounts([account]);
-    } else {
-      connect(network);
-    }
-  });
+  if (suiInstance) {
+    suiInstance?.on("accountChanged", async (publicKey: string) => {
+      if (state.network != Networks.SUI) {
+        updateChainId(meta.filter(isSuiBlockchain)[0].chainId);
+      }
+      const network = Networks.SUI;
+      if (publicKey) {
+        const account = publicKey.toString();
+        updateAccounts([account]);
+      } else {
+        connect(network);
+      }
+    });
+  }
 };
 
 export const switchNetwork: SwitchNetwork = switchNetworkForEvm;
