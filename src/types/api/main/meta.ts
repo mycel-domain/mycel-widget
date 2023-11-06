@@ -86,8 +86,8 @@ export type CompactToken = {
  *
  */
 export type MetaResponse = {
-  blockchains: BlockchainMeta[]
-  tokens: Token[]
+  blockchains: any[]
+  tokens: any[]
   popularTokens: Token[]
   swappers: SwapperMeta[]
 }

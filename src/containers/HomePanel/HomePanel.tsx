@@ -135,6 +135,7 @@ export function HomePanel({
 
   const sendTx = async (type: TransactionType) => {
     const signer = getSigners(connectedWallets[0].walletType).getSigner(type);
+    const signerAddress = await signer.signer.getAddress();
     useTransactionStore.setState({ isSending: true });
 
     if (type === "EVM") {
@@ -142,7 +143,7 @@ export function HomePanel({
         const ethTx = {
           blockChain: "Ethreum",
           isApprovalTx: false,
-          from: signer.signer.provider._address,
+          from: signerAddress,
           to: toAddress,
           data: null,
           value: ethers.utils.parseEther(inputAmount),
@@ -153,7 +154,7 @@ export function HomePanel({
         };
         const { hash } = await signer.signAndSendTx(
           ethTx as any,
-          signer.signer.provider._address,
+          signerAddress,
           fromChain?.chainId as string
         );
 
