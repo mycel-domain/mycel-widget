@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Widget powered by mycel",
   "main": "./dist/index.umd.cjs",
-  "module": "./src/index.ts",
+  "module": "./dist/index.js",
   "exports": {
     ".": {
       "import": "./dist/index.js",
