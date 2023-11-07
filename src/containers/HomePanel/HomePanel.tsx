@@ -2,7 +2,6 @@ import {
   Alert,
   BottomLogo,
   Button,
-  styled,
   Typography,
   Header,
   HeaderButtons,
@@ -336,11 +335,12 @@ export function HomePanel({
         </Alerts>
       )}
       <Footer>
-        {fromChain?.info?.transactionUrl && txHash && (
+        {fromChain?.info?.transactionUrl && txHash ? (
           <Alert type="success">
             <div style={{ fontSize: "small", overflowWrap: "anywhere" }}>
               Success:{" "}
               <a
+                style={{ color: "#0000ff" }}
                 target={"_blank"}
                 href={fromChain?.info?.transactionUrl + txHash}
               >
@@ -348,8 +348,7 @@ export function HomePanel({
               </a>
             </div>
           </Alert>
-        )}
-        {!fromChain?.info?.blockExplorerUrls[0] && txHash && (
+        ) : (
           <Alert type="success">
             <p style={{ fontSize: "small", overflowWrap: "anywhere" }}>
               {txHash}
