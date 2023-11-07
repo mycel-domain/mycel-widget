@@ -30,6 +30,7 @@ import {
 } from "../../types/api/main";
 import { useTransactionStore } from "../../store/transaction";
 import { parseAptos } from "../../utils/common";
+import { styled } from "@stitches/react";
 
 const Container = styled("div", {
   display: "flex",
