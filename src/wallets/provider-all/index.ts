@@ -1,16 +1,9 @@
 import * as bitget from "../provider-bitget";
-// import * as keplr from "../provider-keplr";
 import * as metamask from "../provider-metamask";
+import * as okx from "../provider-okx";
+import * as petra from "../provider-petra";
+import * as sui from "../provider-sui";
 
-type Enviroments = Record<string, Record<string, string>>;
-
-export const allProviders = (enviroments?: Enviroments) => {
-  // walletconnect2.init(enviroments?.walletconnect2 || {});
-
-  return [
-    metamask,
-    // walletconnect2,
-    // keplr,
-    bitget,
-  ];
+export const allProviders = () => {
+  return [metamask, petra, okx, sui, bitget];
 };

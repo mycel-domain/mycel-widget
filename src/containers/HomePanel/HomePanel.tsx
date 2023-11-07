@@ -29,6 +29,7 @@ import {
   SwapResult,
 } from "../../types/api/main";
 import { useTransactionStore } from "../../store/transaction";
+import { parseAptos } from "../../utils/common";
 import { styled } from "@stitches/react";
 
 const Container = styled("div", {
@@ -130,12 +131,11 @@ export function HomePanel({
   showPercentageChange,
 }: HomePanelProps) {
   const { getSigners } = useWallets();
-
   const [txHash, setTxHash] = useState<string>();
 
   const sendTx = async (type: TransactionType) => {
     const signer = getSigners(connectedWallets[0].walletType).getSigner(type);
-    console.log("signer", signer);
+    const signerAddress = await signer.signer.getAddress();
     useTransactionStore.setState({ isSending: true });
 
     if (type === "EVM") {
@@ -143,7 +143,7 @@ export function HomePanel({
         const ethTx = {
           blockChain: "Ethreum",
           isApprovalTx: false,
-          from: signer.signer.provider._address,
+          from: signerAddress,
           to: toAddress,
           data: null,
           value: ethers.utils.parseEther(inputAmount),
@@ -154,7 +154,7 @@ export function HomePanel({
         };
         const { hash } = await signer.signAndSendTx(
           ethTx as any,
-          signer.signer.provider._address,
+          signerAddress,
           fromChain?.chainId as string
         );
 
@@ -173,18 +173,22 @@ export function HomePanel({
           "confirmed"
         );
 
+        const publicKey = signer.provider.publicKey.pubkey
+          ? signer.provider.publicKey.pubkey
+          : signer.provider._publicKey.toString();
+
         let blockhash = (await connection.getLatestBlockhash("finalized"))
           .blockhash;
         const transaction = new Transaction().add(
           SystemProgram.transfer({
-            fromPubkey: new PublicKey(signer.provider.publicKey.pubkey),
+            fromPubkey: new PublicKey(publicKey),
             toPubkey: new PublicKey(toAddress as string),
             lamports: (inputAmount as any) * LAMPORTS_PER_SOL,
           })
         );
 
         transaction.recentBlockhash = blockhash;
-        transaction.feePayer = new PublicKey(signer.provider.publicKey.pubkey);
+        transaction.feePayer = new PublicKey(publicKey);
         const sig = await signer.signTransaction(transaction);
         const raw = sig.serialize();
         const signature = await connection.sendRawTransaction(raw);
@@ -205,13 +209,13 @@ export function HomePanel({
         );
 
         const transaction = {
-          arguments: [toAddress, "717"],
+          arguments: [toAddress, parseAptos(inputAmount)],
           function: "0x1::coin::transfer",
           type: "entry_function_payload",
           type_arguments: ["0x1::aptos_coin::AptosCoin"],
         };
 
-        const pendingTransaction = await getSigners("bitget")
+        const pendingTransaction = await getSigners("petra")
           .getSigner("APTOS" as TransactionType)
           .signAndSubmitTransaction(transaction); // same as below
 

@@ -7,6 +7,7 @@ import { useMetaStore } from "../store/meta";
 import { WalletInfo, WalletState, WidgetConfig } from "../types";
 import { configWalletsToWalletName } from "../utils/providers";
 import { styled } from "../theme";
+import SuiLogo from "../assets/wallets/sui.svg";
 import {
   Alert,
   LoadingFailedAlert,
@@ -55,6 +56,7 @@ export function WalletsPage({
   multiWallets,
   config,
 }: PropTypes) {
+  console.log("suppotr", supportedWallets);
   const { navigateBackFrom } = useNavigateBack();
   const { state, disconnect, getWalletInfo, connect } = useWallets();
   const wallets = getlistWallet(
@@ -71,9 +73,9 @@ export function WalletsPage({
     : wallets;
   sortedWallets = sortWalletsBasedOnState(sortedWallets);
   const [walletErrorMessage, setWalletErrorMessage] = useState("");
-  const toggleConnectWalletsButton =
-    useUiStore.use.toggleConnectWalletsButton();
+  const toggleConnectWalletsButton = useUiStore.use.toggleConnectWalletsButton();
   const loadingMetaStatus = useMetaStore.use.loadingStatus();
+  console.log("sorteed", sortedWallets);
 
   const onSelectWallet = async (type: WalletType) => {
     const wallet = state(type);

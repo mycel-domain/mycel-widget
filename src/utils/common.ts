@@ -35,6 +35,11 @@ export function convertEvmChainId(chainId: string) {
   }
 }
 
+export function parseAptos(apt: string) {
+  const calculatedApt = parseFloat(apt) * 100000000;
+  return calculatedApt.toFixed().toString();
+}
+
 export function changeTargetName(chainName: string) {
   if (chainName === "ETH") return RegistryNetworkName.ETHEREUM_MAINNET_MAINNET;
   else if (chainName === "GETH")
