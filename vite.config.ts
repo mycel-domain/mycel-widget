@@ -13,7 +13,14 @@ export default ({ mode }) => {
           transformMixedEsModules: true,
         },
       },
-      plugins: [nodePolyfills()]
+      optimizeDeps: {
+        esbuildOptions: {
+          define: {
+            global: "globalThis",
+          },
+        },
+      },
+      plugins: [nodePolyfills(), react()]
     })
   }
   else {
