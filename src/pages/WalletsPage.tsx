@@ -144,18 +144,6 @@ export function WalletsPage({
                 onClick={onSelectWallet}
               />
             ))}
-          <Wallet
-            key={"4-suiwallet"}
-            onClick={onSelectWallet}
-            state={WalletState.DISCONNECTED}
-            installLink={
-              "https://chrome.google.com/webstore/detail/sui-wallet/opcgpfmipidbgpenhmajoajpbobppdil"
-            }
-            name={"Sui Wallet"}
-            image={SuiLogo}
-            type={"suiwallet"}
-            showOnMobile={false}
-          />
         </ListContainer>
       </>
     </SecondaryPage>
