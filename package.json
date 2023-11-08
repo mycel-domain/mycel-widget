@@ -46,7 +46,7 @@
     "ethers": "^5.7.2",
     "immer": "^9.0.19",
     "mitt": "^3.0.0",
-    "mycel-client-ts": "^0.0.10",
+    "mycel-client-ts": "^0.0.11",
     "rango-sdk": "^0.1.35",
     "react": "^18.2.0",
     "react-color": "^2.19.3",

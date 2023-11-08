@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { RegistryDomain, RegistryNetworkName } from 'mycel-client-ts/mycel.registry/rest';
+import { RegistryNetworkName } from "mycel-client-ts/mycel.resolver/rest";
 import {
   styled,
   TextField,
   Typography,
 } from '../..';
-import { useRegistryDomain } from '../../hooks/useRegistryDomain';
+import { useMycelResolver } from '../../hooks/useMycelResolver';
 import { useTransactionStore } from '../../store/transaction';
 
 const Box = styled('div', {
@@ -68,33 +68,25 @@ const Container = styled('div', {
   },
 });
 
-const getWalletAddr = (domain: RegistryDomain, recordType: RegistryNetworkName) => {
-  if (!domain || !domain.walletRecords || !domain.walletRecords[recordType]) {
-    return "";
-  }
-  return domain.walletRecords[recordType].value;
-};
-
-
 export function NameResolutionForm() {
-  const { registryDomain, updateRegistryDomain } = useRegistryDomain();
+  const { mycelRecords, updateMycelRecords, getWalletAddr } = useMycelResolver();
   const targetNetworkName = useTransactionStore.use.targetNetworkName();
   const toAddress = useTransactionStore.use.toAddress();
   const setToAddress = useTransactionStore.use.setToAddress();
   const [domainName, setDomainName] = React.useState("");
 
   useEffect(() => {
-    if (registryDomain) {
-      const walletAddr = registryDomain ? getWalletAddr(registryDomain, targetNetworkName as RegistryNetworkName) : "";
+    if (mycelRecords) {
+      const walletAddr = getWalletAddr(targetNetworkName as RegistryNetworkName);
       setToAddress(walletAddr || "");
     } else {
       setToAddress("");
     }
-  }, [registryDomain, targetNetworkName]);
+  }, [mycelRecords, targetNetworkName]);
 
 
   useEffect(() => {
-    updateRegistryDomain(domainName)
+    updateMycelRecords(domainName)
       .then()
       .catch((e) => {
         console.error(e);
@@ -127,7 +119,7 @@ export function NameResolutionForm() {
                 }}>
                 <Typography
                   variant="caption"
-                  color="neutral800">{domainName}</Typography>
+                  color="neutral800">{toAddress ? toAddress : ""}</Typography>
               </span>
             }
             value={domainName}
@@ -139,7 +131,6 @@ export function NameResolutionForm() {
         {domainName && targetNetworkName && (
           toAddress ? (
             <p style={{ color: '#000', overflowWrap: 'break-word' }}>
-              <span className="italic">{domainName}</span> on {targetNetworkName} is found: <span className="italic">{toAddress}</span>.
             </p>
           ) : (
             <p style={{ color: '#d80128', overflowWrap: 'break-word' }} className="m-2 text-sm text-red-500">
