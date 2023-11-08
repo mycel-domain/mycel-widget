@@ -278,7 +278,7 @@ export function HomePanel({
           />
         </>
       </FromContainer>
-      <NameResolutionForm />
+      <NameResolutionForm chain={fromChain} />
       {(errorMessage || hasLimitError(bestRoute)) && (
         <Alerts>
           {errorMessage && <Alert type="error">{errorMessage}</Alert>}

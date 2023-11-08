@@ -17,7 +17,7 @@ import {
 import { useWalletsStore } from "./wallets";
 import { TokenWithBalance } from "../pages/SelectTokenPage";
 import { isPositiveNumber } from "../utils/numbers";
-import { RegistryNetworkName } from "mycel-client-ts/mycel.registry/rest";
+import { RegistryNetworkName } from "mycel-client-ts/mycel.resolver/rest";
 import { BestRouteResponse, BlockchainMeta, Token } from "../types/api/main";
 
 const getUsdValue = (token: Token | null, amount: string): BigNumber | null =>
@@ -36,6 +36,7 @@ export interface TransactionState {
   fromToken: TokenWithBalance | null;
   toToken: TokenWithBalance | null;
   targetNetworkName: RegistryNetworkName | null;
+  domainName: string;
   isSending: boolean;
   loading: boolean;
   error: string;
@@ -48,6 +49,7 @@ export interface TransactionState {
     chain: BlockchainMeta | null,
     setDefaultToken?: boolean
   ) => void;
+  setDomainName: (domainName: string) => void;
   setToChain: (chian: BlockchainMeta | null, setDefaultToken?: boolean) => void;
   setFromToken: (token: Token | null) => void;
   setToToken: (token: Token | null) => void;
@@ -66,6 +68,7 @@ export const useTransactionStore = createSelectors(
       inputAmount: "",
       outputAmount: null,
       targetNetworkName: null,
+      domainName: "",
       inputUsdValue: new BigNumber(0),
       outputUsdValue: new BigNumber(0),
       toChain: null,
@@ -166,6 +169,10 @@ export const useTransactionStore = createSelectors(
         set(() => ({
           targetNetworkName: chain,
         })),
+      setDomainName: (domainName) =>
+        set(() => ({
+          domainName: domainName,
+        })),
       setToAddress: (address) =>
         set(() => ({
           toAddress: address,
@@ -190,8 +197,8 @@ export const useTransactionStore = createSelectors(
         const failedIndex =
           pendingSwap.status === "failed"
             ? pendingSwap.steps.findIndex(
-                (s: { status: string }) => s.status === "failed"
-              )
+              (s: { status: string }) => s.status === "failed"
+            )
             : null;
 
         if (failedIndex === null || failedIndex < 0) return;

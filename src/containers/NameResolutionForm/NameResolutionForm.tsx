@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { RegistryNetworkName } from "mycel-client-ts/mycel.resolver/rest";
+import { BlockchainMeta } from '../../types';
 import {
   styled,
   TextField,
@@ -68,16 +68,20 @@ const Container = styled('div', {
   },
 });
 
-export function NameResolutionForm() {
+type NameResolutionFormProps = {
+  chain: BlockchainMeta | null;
+}
+export function NameResolutionForm(props: NameResolutionFormProps) {
   const { mycelRecords, updateMycelRecords, getWalletAddr } = useMycelResolver();
   const targetNetworkName = useTransactionStore.use.targetNetworkName();
+  const setDomainName = useTransactionStore.use.setDomainName();
+  const domainName = useTransactionStore.use.domainName();
   const toAddress = useTransactionStore.use.toAddress();
   const setToAddress = useTransactionStore.use.setToAddress();
-  const [domainName, setDomainName] = React.useState("");
 
   useEffect(() => {
-    if (mycelRecords) {
-      const walletAddr = getWalletAddr(targetNetworkName as RegistryNetworkName);
+    if (mycelRecords && targetNetworkName) {
+      const walletAddr = getWalletAddr(targetNetworkName);
       setToAddress(walletAddr || "");
     } else {
       setToAddress("");
@@ -134,7 +138,7 @@ export function NameResolutionForm() {
             </p>
           ) : (
             <p style={{ color: '#d80128', overflowWrap: 'break-word' }} className="m-2 text-sm text-red-500">
-              <span className="italic">{domainName}</span> doesn&apos;t exists in registry on {targetNetworkName}.
+              <span className="italic">{domainName}</span> doesn&apos;t exists in registry on {props.chain?.displayName}.
             </p>
           )
         )}

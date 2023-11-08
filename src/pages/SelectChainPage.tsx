@@ -4,8 +4,7 @@ import { useMetaStore } from "../store/meta";
 import { useNavigateBack } from "../hooks/useNavigateBack";
 import { navigationRoutes } from "../constants/navigationRoutes";
 import { BlockchainSelector } from "../containers";
-import { changeTargetName } from "../utils/common";
-import { RegistryNetworkName } from "mycel-client-ts/mycel.registry/rest";
+import { RegistryNetworkName } from "mycel-client-ts/mycel.resolver/rest";
 
 interface PropTypes {
   type: "from" | "to";
