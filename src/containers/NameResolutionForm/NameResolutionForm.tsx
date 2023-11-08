@@ -70,7 +70,9 @@ const Container = styled('div', {
 
 type NameResolutionFormProps = {
   chain: BlockchainMeta | null;
+  setError: (error: string) => void;
 }
+
 export function NameResolutionForm(props: NameResolutionFormProps) {
   const { mycelRecords, updateMycelRecords, getWalletAddr } = useMycelResolver();
   const targetNetworkName = useTransactionStore.use.targetNetworkName();
@@ -80,13 +82,19 @@ export function NameResolutionForm(props: NameResolutionFormProps) {
   const setToAddress = useTransactionStore.use.setToAddress();
 
   useEffect(() => {
-    if (mycelRecords && targetNetworkName) {
-      const walletAddr = getWalletAddr(targetNetworkName);
-      setToAddress(walletAddr || "");
-    } else {
-      setToAddress("");
+    if (domainName) {
+      if (mycelRecords && targetNetworkName) {
+        const walletAddr = getWalletAddr(targetNetworkName);
+        if (walletAddr) {
+          setToAddress(walletAddr);
+          props.setError("");
+        }
+      } else {
+        setToAddress("");
+        props.setError(`${domainName} doesn't exists in registry on ${props.chain?.displayName}.`);
+      }
     }
-  }, [mycelRecords, targetNetworkName]);
+  }, [mycelRecords, targetNetworkName, domainName]);
 
 
   useEffect(() => {
@@ -132,16 +140,6 @@ export function NameResolutionForm(props: NameResolutionFormProps) {
             }}
           />
         </div>
-        {domainName && targetNetworkName && (
-          toAddress ? (
-            <p style={{ color: '#000', overflowWrap: 'break-word' }}>
-            </p>
-          ) : (
-            <p style={{ color: '#d80128', overflowWrap: 'break-word' }} className="m-2 text-sm text-red-500">
-              <span className="italic">{domainName}</span> doesn&apos;t exists in registry on {props.chain?.displayName}.
-            </p>
-          )
-        )}
       </Container >
     </Box >
   );

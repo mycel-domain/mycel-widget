@@ -11,6 +11,7 @@ import {
   Spinner,
 } from "../..";
 import React, { useState } from "react";
+import { styled } from "@stitches/react";
 import {
   Transaction,
   Connection,
@@ -31,7 +32,6 @@ import {
 } from "../../types/api/main";
 import { useTransactionStore } from "../../store/transaction";
 import { parseAptos } from "../../utils/common";
-import { styled } from "@stitches/react";
 
 const Container = styled("div", {
   display: "flex",
@@ -123,6 +123,7 @@ export function HomePanel({
 }: HomePanelProps) {
   const { getSigners } = useWallets();
   const [txHash, setTxHash] = useState<string>();
+  const [error, setError] = useState<string>("");
 
   const sendTx = async (type: TransactionType) => {
     const signer = getSigners(connectedWallets[0].walletType).getSigner(type);
@@ -275,10 +276,11 @@ export function HomePanel({
             connectedWallets={connectedWallets}
             onChainClick={() => onChainClick("from-chain")}
             onTokenClick={() => onTokenClick("from-token")}
+            setError={setError}
           />
         </>
       </FromContainer>
-      <NameResolutionForm chain={fromChain} />
+      <NameResolutionForm chain={fromChain} setError={setError} />
       {(errorMessage || hasLimitError(bestRoute)) && (
         <Alerts>
           {errorMessage && <Alert type="error">{errorMessage}</Alert>}
@@ -308,13 +310,13 @@ export function HomePanel({
               </a>
             </div>
           </Alert>
-        ) : (
-          <Alert type="success">
+        ) : error ? (
+          <Alert type="error">
             <p style={{ fontSize: "small", overflowWrap: "anywhere" }}>
-              {txHash}
+              {error}
             </p>
           </Alert>
-        )}
+        ) : <></>}
         <Button
           type="primary"
           align="grow"

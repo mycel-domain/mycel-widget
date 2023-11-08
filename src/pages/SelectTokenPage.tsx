@@ -9,7 +9,6 @@ import { Asset } from "../types";
 import { Token } from "../types/api/main";
 
 interface PropTypes {
-  type: "from" | "to";
   supportedTokens?: Asset[];
 }
 
@@ -23,39 +22,26 @@ export interface TokenWithBalance extends Token {
 export function SelectTokenPage(props: PropTypes) {
   const { navigateBackFrom } = useNavigateBack();
 
-  const { type, supportedTokens } = props;
-  const sourceTokens = useTransactionStore.use.sourceTokens();
-  const destinationTokens = useTransactionStore.use.destinationTokens();
+  const { supportedTokens } = props;
+  const fromTokens = useTransactionStore.use.fromTokens();
   const supportedSourceTokens = supportedTokens
-    ? sourceTokens.filter((token) =>
-        supportedTokens.some((supportedToken) =>
-          tokensAreEqual(supportedToken, token)
-        )
+    ? fromTokens.filter((token) =>
+      supportedTokens.some((supportedToken) =>
+        tokensAreEqual(supportedToken, token)
       )
-    : sourceTokens;
-
-  const supportedDestinationTokens = supportedTokens
-    ? destinationTokens.filter((token) =>
-        supportedTokens.some((supportedToken) =>
-          tokensAreEqual(supportedToken, token)
-        )
-      )
-    : destinationTokens;
+    )
+    : fromTokens;
 
   const fromToken = useTransactionStore.use.fromToken();
-  const toToken = useTransactionStore.use.toToken();
   const setFromToken = useTransactionStore.use.setFromToken();
-  const setToToken = useTransactionStore.use.setToToken();
   const loadingMetaStatus = useMetaStore.use.loadingStatus();
 
   return (
     <TokenSelector
-      type={type === "from" ? "Source" : "Destination"}
-      list={type == "from" ? supportedSourceTokens : supportedDestinationTokens}
-      selected={type === "from" ? fromToken : toToken}
+      list={supportedSourceTokens}
+      selected={fromToken}
       onChange={(token) => {
-        if (type === "from") setFromToken(token);
-        else setToToken(token);
+        setFromToken(token);
         navigateBackFrom(navigationRoutes.fromToken);
       }}
       onBack={navigateBackFrom.bind(null, navigationRoutes.fromToken)}

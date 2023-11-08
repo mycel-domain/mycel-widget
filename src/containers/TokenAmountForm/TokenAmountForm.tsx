@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BlockchainMeta, ConnectedWallet } from '../../types';
 import {
   AngleDownIcon,
@@ -73,6 +73,7 @@ type TokenAmountFormProps = {
   setInputAmount: (amount: string) => void;
   connectedWallets: ConnectedWallet[];
   inputAmount: string;
+  setError: (error: string) => void;
   onChainClick: () => void;
   onTokenClick: () => void;
 }
@@ -85,7 +86,22 @@ export function TokenAmountForm(props: TokenAmountFormProps) {
     inputAmount,
     onChainClick,
     onTokenClick,
+    setError,
   } = props;
+
+  useEffect(() => {
+    if (chain && token) {
+      setError('');
+    } else {
+      setError('Please select a chain and token');
+    }
+    if (inputAmount) {
+      setError('');
+    } else {
+      setError('Please enter an valid amount');
+    }
+
+  }, [chain, token, inputAmount]);
 
   const ImagePlaceholder = styled('span', {
     width: '24px',
@@ -168,6 +184,18 @@ export function TokenAmountForm(props: TokenAmountFormProps) {
               }}
               value={inputAmount || ''}
               min={0}
+              suffix={
+                <span
+                  style={{
+                    position: 'absolute',
+                    right: '4px',
+                    bottom: '2px',
+                  }}>
+                  <Typography
+                    variant="caption"
+                    color="neutral800">{token ? token.symbol : ""}</Typography>
+                </span>
+              }
               onChange={
                 (event) => {
                   props.onAmountChange(event.target.value);

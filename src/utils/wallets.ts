@@ -199,10 +199,10 @@ export function getSelectableWallets(
           destinationChain === connectedWallet.chain
             ? false
             : !!selectedWallets.find(
-                (selectedWallet) =>
-                  selectedWallet.chain === connectedWallet.chain &&
-                  selectedWallet.walletType === connectedWallet.walletType
-              ),
+              (selectedWallet) =>
+                selectedWallet.chain === connectedWallet.chain &&
+                selectedWallet.walletType === connectedWallet.walletType
+            ),
       };
     }
   );
@@ -452,10 +452,7 @@ export function getSortedTokens(
   chain: BlockchainMeta | null,
   tokens: Token[],
   connectedWallets: ConnectedWallet[],
-  otherChainTokens: TokenWithBalance[]
 ): TokenWithBalance[] {
-  const fromChainEqueulsToToChain = chain?.name === otherChainTokens[0]?.name;
-  if (fromChainEqueulsToToChain) return otherChainTokens;
   const filteredTokens = tokens.filter(
     (token) => token.blockchain === chain?.name
   );
@@ -475,13 +472,10 @@ export function tokensAreEqual(
 
 export function getDefaultToken(
   sortedTokens: TokenWithBalance[],
-  otherToken: TokenWithBalance | null
 ): TokenWithBalance {
   let selectedToken: TokenWithBalance;
   const firstToken = sortedTokens[0];
-  const secondToken = sortedTokens[1];
   if (sortedTokens.length === 1) selectedToken = firstToken;
-  else if (tokensAreEqual(firstToken, otherToken)) selectedToken = secondToken;
   else selectedToken = firstToken;
   return selectedToken;
 }
@@ -492,14 +486,14 @@ export function sortWalletsBasedOnState(
   return wallets.sort(
     (a, b) =>
       Number(b.state === WalletStatus.CONNECTED) -
-        Number(a.state === WalletStatus.CONNECTED) ||
+      Number(a.state === WalletStatus.CONNECTED) ||
       Number(
         b.state === WalletStatus.DISCONNECTED ||
-          b.state === WalletStatus.CONNECTING
+        b.state === WalletStatus.CONNECTING
       ) -
-        Number(
-          a.state === WalletStatus.DISCONNECTED ||
-            a.state === WalletStatus.CONNECTING
-        )
+      Number(
+        a.state === WalletStatus.DISCONNECTED ||
+        a.state === WalletStatus.CONNECTING
+      )
   );
 }

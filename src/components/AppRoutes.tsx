@@ -23,7 +23,6 @@ export function AppRoutes(props: PropTypes) {
       path: navigationRoutes.fromChain,
       element: (
         <SelectChainPage
-          type="from"
           supportedChains={config?.from?.blockchains}
         />
       ),
