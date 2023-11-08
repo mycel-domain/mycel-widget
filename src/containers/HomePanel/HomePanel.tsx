@@ -6,6 +6,7 @@ import {
   Header,
   HeaderButtons,
   TokenInfo,
+  TokenAmountForm,
   useWallets,
   Spinner,
 } from "../..";
@@ -274,25 +275,16 @@ export function HomePanel({
       />
       <FromContainer>
         <>
-          <TokenInfo
-            type="From"
+          <TokenAmountForm
+            onAmountChange={setInputAmount}
             chain={fromChain}
             token={fromToken}
-            onAmountChange={setInputAmount}
-            inputAmount={inputAmount}
-            fromChain={fromChain}
-            toChain={toChain}
             loadingStatus={loadingStatus}
-            inputUsdValue={inputUsdValue}
-            fromToken={fromToken}
             setInputAmount={setInputAmount}
+            inputAmount={inputAmount}
             connectedWallets={connectedWallets}
-            bestRoute={bestRoute}
-            fetchingBestRoute={fetchingBestRoute}
             onChainClick={() => onChainClick("from-chain")}
             onTokenClick={() => onTokenClick("from-token")}
-            tokenBalanceReal={tokenBalanceReal}
-            tokenBalance={tokenBalance}
           />
         </>
       </FromContainer>

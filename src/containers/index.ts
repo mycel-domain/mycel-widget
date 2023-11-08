@@ -3,4 +3,5 @@ export * from "./BlockchainSelector";
 export * from "./ConnectWalletsModal";
 export * from "./TokenInfo";
 export * from "./TokenSelector";
+export * from "./TokenAmountForm";
 export * from "./Warnings";

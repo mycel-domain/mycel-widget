@@ -29,21 +29,9 @@ export function AppRoutes(props: PropTypes) {
       ),
     },
     {
-      path: navigationRoutes.toChain,
-      element: (
-        <SelectChainPage type="to" supportedChains={config?.to?.blockchains} />
-      ),
-    },
-    {
       path: navigationRoutes.fromToken,
       element: (
         <SelectTokenPage type="from" supportedTokens={config?.from?.tokens} />
-      ),
-    },
-    {
-      path: navigationRoutes.toToken,
-      element: (
-        <SelectTokenPage type="to" supportedTokens={config?.to?.tokens} />
       ),
     },
     {
