@@ -1,0 +1,1 @@
+export { NameResolutionForm } from './NameResolutionForm';

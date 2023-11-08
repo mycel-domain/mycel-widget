@@ -5,8 +5,8 @@ import {
   Typography,
   Header,
   HeaderButtons,
-  TokenInfo,
   TokenAmountForm,
+  NameResolutionForm,
   useWallets,
   Spinner,
 } from "../..";
@@ -104,17 +104,11 @@ export function HomePanel({
   fetchTransaction,
   swapButtonDisabled,
   fromChain,
-  toChain,
   fromToken,
-  toToken,
   setInputAmount,
   toAddress,
-  outputAmount,
   inputAmount,
   loadingStatus,
-  fetchingBestRoute,
-  outputUsdValue,
-  inputUsdValue,
   swapButtonTitle,
   onChainClick,
   onTokenClick,
@@ -125,11 +119,7 @@ export function HomePanel({
   swap,
   fromAmountRangeError,
   recommendation,
-  percentageChange,
-  tokenBalanceReal,
-  tokenBalance,
   swapFromAmount,
-  showPercentageChange,
 }: HomePanelProps) {
   const { getSigners } = useWallets();
   const [txHash, setTxHash] = useState<string>();
@@ -288,30 +278,7 @@ export function HomePanel({
           />
         </>
       </FromContainer>
-      <TokenInfo
-        type="To"
-        chain={toChain}
-        token={toToken}
-        outputAmount={outputAmount}
-        percentageChange={percentageChange}
-        outputUsdValue={outputUsdValue}
-        fromChain={fromChain}
-        toChain={toChain}
-        loadingStatus={loadingStatus}
-        inputUsdValue={inputUsdValue}
-        fromToken={fromToken}
-        setInputAmount={setInputAmount}
-        connectedWallets={connectedWallets}
-        inputAmount={inputAmount}
-        bestRoute={bestRoute}
-        fetchingBestRoute={fetchingBestRoute}
-        onChainClick={() => onChainClick("to-chain")}
-        onTokenClick={() => onTokenClick("to-token")}
-        tokenBalanceReal={tokenBalanceReal}
-        tokenBalance={tokenBalance}
-        showPercentageChange={showPercentageChange}
-      />
-
+      <NameResolutionForm />
       {(errorMessage || hasLimitError(bestRoute)) && (
         <Alerts>
           {errorMessage && <Alert type="error">{errorMessage}</Alert>}

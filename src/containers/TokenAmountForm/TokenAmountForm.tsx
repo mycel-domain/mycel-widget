@@ -63,13 +63,6 @@ const Container = styled('div', {
       width: '30%',
     },
   },
-  '.output-usd': {
-    display: 'flex',
-    div: {
-      display: 'flex',
-      paddingLeft: '$8',
-    },
-  },
 });
 
 type TokenAmountFormProps = {

@@ -16,8 +16,8 @@ export function SelectChainPage(props: PropTypes) {
   const { type, supportedChains } = props;
   const blockchains = supportedChains
     ? useMetaStore.use
-        .meta()
-        .blockchains.filter((chain) => supportedChains.includes(chain.name))
+      .meta()
+      .blockchains.filter((chain) => supportedChains.includes(chain.name))
     : useMetaStore.use.meta().blockchains;
   const loadingStatus = useMetaStore.use.loadingStatus();
   const fromChain = useTransactionStore.use.fromChain();
@@ -37,8 +37,7 @@ export function SelectChainPage(props: PropTypes) {
       onChange={(chain) => {
         if (type === "from") {
           setFromChain(chain, true);
-          const networkName = changeTargetName(chain.name as string);
-          setTargetNetworkName(networkName as RegistryNetworkName);
+          setTargetNetworkName(chain.name as RegistryNetworkName);
         } else setToChain(chain, true);
         navigateBackFrom(navigationRoutes.fromChain);
       }}
