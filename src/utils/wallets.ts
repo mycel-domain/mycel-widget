@@ -51,12 +51,9 @@ export function getlistWallet(
   return list
     .filter((wallet) => !excludedWallets.includes(wallet as WalletTypes))
     .map((type) => {
-      const {
-        name,
-        img: image,
-        installLink,
-        showOnMobile,
-      } = getWalletInfo(type);
+      const { name, img: image, installLink, showOnMobile } = getWalletInfo(
+        type
+      );
       const state = getStateWallet(getState(type));
       return {
         name,
@@ -85,6 +82,9 @@ export function prepareAccountsForWalletStore(
   wallet: WalletType,
   accounts: string[],
   evmBasedChains: string[],
+  solanaBasedChains: string[],
+  aptosBasedChains: string[],
+  suiBasedChains: string[],
   supportedChainNames: Network[] | null
 ): Wallet[] {
   const result: Wallet[] = [];
@@ -116,7 +116,7 @@ export function prepareAccountsForWalletStore(
 
     // Here we check given `network` is not supported by wallet
     // And also the network is known.
-    if (notSupportedNetworkByWallet) return;
+    // if (notSupportedNetworkByWallet) return;
 
     // In some cases we can handle unknown network by checking its address
     // pattern and act on it.
@@ -142,7 +142,27 @@ export function prepareAccountsForWalletStore(
         addAccount(network, address.toLowerCase());
       });
     } else {
-      addAccount(network, address);
+      const solanaChainsSupportedByWallet = supportedChains.filter((chain) =>
+        solanaBasedChains.includes(chain)
+      );
+      const aptosChainsSupportedByWallet = supportedChains.filter((chain) =>
+        aptosBasedChains.includes(chain)
+      );
+      const suiChainsSupportedByWallet = supportedChains.filter((chain) =>
+        suiBasedChains.includes(chain)
+      );
+
+      solanaChainsSupportedByWallet.forEach((network) => {
+        addAccount(network, address.toLowerCase());
+      });
+
+      aptosChainsSupportedByWallet.forEach((network) => {
+        addAccount(network, address.toLowerCase());
+      });
+
+      suiChainsSupportedByWallet.forEach((network) => {
+        addAccount(network, address.toLowerCase());
+      });
     }
   });
 
@@ -199,10 +219,10 @@ export function getSelectableWallets(
           destinationChain === connectedWallet.chain
             ? false
             : !!selectedWallets.find(
-              (selectedWallet) =>
-                selectedWallet.chain === connectedWallet.chain &&
-                selectedWallet.walletType === connectedWallet.walletType
-            ),
+                (selectedWallet) =>
+                  selectedWallet.chain === connectedWallet.chain &&
+                  selectedWallet.walletType === connectedWallet.walletType
+              ),
       };
     }
   );
@@ -452,7 +472,10 @@ export function getSortedTokens(
   chain: BlockchainMeta | null,
   tokens: Token[],
   connectedWallets: ConnectedWallet[],
+  otherChainTokens: TokenWithBalance[]
 ): TokenWithBalance[] {
+  const fromChainEqueulsToToChain = chain?.name === otherChainTokens[0]?.name;
+  if (fromChainEqueulsToToChain) return otherChainTokens;
   const filteredTokens = tokens.filter(
     (token) => token.blockchain === chain?.name
   );
@@ -472,10 +495,13 @@ export function tokensAreEqual(
 
 export function getDefaultToken(
   sortedTokens: TokenWithBalance[],
+  otherToken: TokenWithBalance | null
 ): TokenWithBalance {
   let selectedToken: TokenWithBalance;
   const firstToken = sortedTokens[0];
+  const secondToken = sortedTokens[1];
   if (sortedTokens.length === 1) selectedToken = firstToken;
+  else if (tokensAreEqual(firstToken, otherToken)) selectedToken = secondToken;
   else selectedToken = firstToken;
   return selectedToken;
 }
@@ -486,14 +512,14 @@ export function sortWalletsBasedOnState(
   return wallets.sort(
     (a, b) =>
       Number(b.state === WalletStatus.CONNECTED) -
-      Number(a.state === WalletStatus.CONNECTED) ||
+        Number(a.state === WalletStatus.CONNECTED) ||
       Number(
         b.state === WalletStatus.DISCONNECTED ||
-        b.state === WalletStatus.CONNECTING
+          b.state === WalletStatus.CONNECTING
       ) -
-      Number(
-        a.state === WalletStatus.DISCONNECTED ||
-        a.state === WalletStatus.CONNECTING
-      )
+        Number(
+          a.state === WalletStatus.DISCONNECTED ||
+            a.state === WalletStatus.CONNECTING
+        )
   );
 }

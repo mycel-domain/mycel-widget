@@ -1,11 +1,4 @@
-import {
-  Button,
-  AddWalletIcon,
-  Typography,
-  styled,
-  Spinner,
-  Image,
-} from "../..";
+import { Button, AddWalletIcon, Typography, styled, Image } from "../..";
 import React, { PropsWithChildren } from "react";
 import { LoadingStatus } from "../../types/meta";
 import { ConnectedWallet } from "../../types/wallet";
@@ -44,8 +37,6 @@ export function HeaderLayout({
   connectedWalletsImages,
   loadingStatus,
   connectedWallets,
-  totalBalance,
-  fetchingBalance,
   onClick,
   children,
 }: PropsWithChildren<HeaderLayoutProps>) {
@@ -74,12 +65,10 @@ export function HeaderLayout({
         >
           <div className="balance">
             <Typography variant="body2">
-              {
-                !connectedWallets?.length && "Connect Wallet"
-                // : `$${totalBalance || 0}`} // TODO: Add get balance
+              {!connectedWallets?.length && "Connect Wallet"
+              // : `$${totalBalance || 0}`} // TODO: Add get balance
               }
             </Typography>
-            {fetchingBalance && <Spinner />}
           </div>
         </Button>
       </Container>

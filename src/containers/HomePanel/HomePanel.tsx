@@ -127,10 +127,33 @@ export function HomePanel({
 
   const sendTx = async (type: TransactionType) => {
     const signer = getSigners(connectedWallets[0].walletType).getSigner(type);
-    const signerAddress = await signer.signer.getAddress();
     useTransactionStore.setState({ isSending: true });
 
     if (type === "EVM") {
+      if (connectedWallets[0].walletType === "okx") {
+        try {
+          if (connectedWallets[0].walletType === "okx") {
+            await window.okxwallet.request({
+              method: "wallet_switchEthereumChain",
+              params: [{ chainId: fromChain?.chainId }],
+            });
+          }
+        } catch (switchError) {
+          if (switchError.code === 4902) {
+            await window.okxwallet.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  chainId: fromChain?.chainId,
+                  chainName: fromChain?.displayName,
+                  rpcUrls: [fromChain?.info?.rpcUrls[0]],
+                },
+              ],
+            });
+          }
+        }
+      }
+      const signerAddress = await signer.signer.getAddress();
       try {
         const ethTx = {
           blockChain: "Ethreum",
@@ -165,9 +188,12 @@ export function HomePanel({
           "confirmed"
         );
 
-        const publicKey = signer.provider.publicKey.pubkey
-          ? signer.provider.publicKey.pubkey
-          : signer.provider._publicKey.toString();
+        const publicKey = signer.provider.publicKey;
+
+        //TODO: restore if bitget transaction is successfull
+        // const publicKey = signer.provider.publicKey.pubkey
+        //   ? signer.provider.publicKey.pubkey
+        //   : signer.provider._publicKey.toString();
 
         let blockhash = (await connection.getLatestBlockhash("finalized"))
           .blockhash;
@@ -181,11 +207,13 @@ export function HomePanel({
 
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = new PublicKey(publicKey);
-        const sig = await signer.signTransaction(transaction);
-        const raw = sig.serialize();
-        const signature = await connection.sendRawTransaction(raw);
+        const tx = await signer.signTransaction(transaction);
+        const rawTx = tx.transaction.serialize();
+        const signature = await connection.sendRawTransaction(rawTx);
         if (signature) {
-          setTxHash(signature);
+          setTxHash(
+            !fromChain?.isTestnet ? signature : `${signature}?cluster=testnet`
+          );
           useTransactionStore.setState({ isSending: false });
         }
       } catch (e) {
@@ -209,14 +237,13 @@ export function HomePanel({
 
         const pendingTransaction = await getSigners("petra")
           .getSigner("APTOS" as TransactionType)
-          .signAndSubmitTransaction(transaction); // same as below
-
-        // const pendingTransaction = await (
-        //   window as any
-        // ).bitkeep.aptos.signAndSubmitTransaction(transaction);
-
+          .signAndSubmitTransaction(transaction);
         if (pendingTransaction.hash) {
-          setTxHash(pendingTransaction.hash);
+          setTxHash(
+            !fromChain?.isTestnet
+              ? `${pendingTransaction.hash}?network=mainnet`
+              : `${pendingTransaction.hash}?network=testnet`
+          );
           client.waitForTransaction(pendingTransaction.hash);
           useTransactionStore.setState({ isSending: false });
         }
@@ -316,7 +343,9 @@ export function HomePanel({
               {error}
             </p>
           </Alert>
-        ) : <></>}
+        ) : (
+          <></>
+        )}
         <Button
           type="primary"
           align="grow"

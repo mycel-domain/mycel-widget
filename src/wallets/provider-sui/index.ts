@@ -38,8 +38,6 @@ export const config = {
 export const getInstance = suiWalletInstances;
 
 export const connect: Connect = async ({ instance }) => {
-  console.log("instance", instance);
-
   const results: ProviderConnectResult[] = [];
 
   if (instance) {

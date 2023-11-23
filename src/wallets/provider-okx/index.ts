@@ -18,12 +18,11 @@ import {
   switchNetworkForEvm,
   WalletTypes,
 } from '../shared';
-import { isEvmBlockchain } from '../../types';
+import { evmBlockchains, isEvmBlockchain } from '../../types';
 
 import {
   getSolanaAccounts,
   okx_instance,
-  OKX_WALLET_SUPPORTED_CHAINS,
 } from './helpers';
 import signer from './signer';
 
@@ -92,19 +91,23 @@ export const canEagerConnect: CanEagerConnect = async ({ instance, meta }) => {
 
 export const getWalletInfo: (allBlockChains: BlockchainMeta[]) => WalletInfo = (
   allBlockChains
-) => ({
-  name: 'OKX',
-  img: 'https://raw.githubusercontent.com/rango-exchange/rango-assets/main/wallets/okx/icon.svg',
-  installLink: {
-    CHROME:
-      'https://chrome.google.com/webstore/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge',
-    BRAVE:
-      'https://chrome.google.com/webstore/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge',
-    FIREFOX: 'https://addons.mozilla.org/en-US/firefox/addon/okexwallet',
-    DEFAULT: 'https://www.okx.com/web3',
-  },
-  color: 'white',
-  supportedChains: allBlockChains.filter((blockchainMeta) =>
-    OKX_WALLET_SUPPORTED_CHAINS.includes(blockchainMeta.name as Networks)
-  ),
-});
+) => {
+  const evms = evmBlockchains(allBlockChains);
+  //TODO: testnetが取得できるまでコメントアウト
+  // const solana = solanaBlockchain(allBlockChains);
+
+  return {
+    name: 'OKX',
+    img: 'https://raw.githubusercontent.com/rango-exchange/rango-assets/main/wallets/okx/icon.svg',
+    installLink: {
+      CHROME:
+        'https://chrome.google.com/webstore/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge',
+      BRAVE:
+        'https://chrome.google.com/webstore/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge',
+      FIREFOX: 'https://addons.mozilla.org/en-US/firefox/addon/okexwallet',
+      DEFAULT: 'https://www.okx.com/web3',
+    },
+    color: 'white',
+    supportedChains: [...evms],
+  };
+};

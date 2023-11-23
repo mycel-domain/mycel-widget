@@ -210,12 +210,7 @@ export type BlockchainMetaBase = {
   sort: number;
   enabled: boolean;
   chainId: string | null;
-  info:
-    | EVMChainInfo
-    | CosmosChainInfo
-    | StarkNetChainInfo
-    | TronChainInfo
-    | null;
+  info: EVMChainInfo | null;
   isTestnet?: boolean;
 };
 
@@ -224,13 +219,6 @@ export interface EvmBlockchainMeta extends BlockchainMetaBase {
   chainId: string;
   info: EVMChainInfo;
 }
-
-export interface CosmosBlockchainMeta extends BlockchainMetaBase {
-  type: TransactionType.COSMOS;
-  chainId: string | null;
-  info: CosmosChainInfo | null;
-}
-
 export interface TransferBlockchainMeta extends BlockchainMetaBase {
   type: TransactionType.TRANSFER;
   chainId: null;
@@ -239,24 +227,6 @@ export interface TransferBlockchainMeta extends BlockchainMetaBase {
 
 export interface SolanaBlockchainMeta extends BlockchainMetaBase {
   type: TransactionType.SOLANA;
-  chainId: string;
-  info: null;
-}
-
-export interface StarkNetBlockchainMeta extends BlockchainMetaBase {
-  type: TransactionType.STARKNET;
-  chainId: string;
-  info: StarkNetChainInfo;
-}
-
-export interface TronBlockchainMeta extends BlockchainMetaBase {
-  type: TransactionType.TRON;
-  chainId: string;
-  info: TronChainInfo;
-}
-
-export interface TonBlockchainMeta extends BlockchainMetaBase {
-  type: TransactionType.TON;
   chainId: string;
   info: null;
 }
@@ -275,12 +245,8 @@ export interface SuiBlockchainMeta extends BlockchainMetaBase {
 
 export type BlockchainMeta =
   | EvmBlockchainMeta
-  | CosmosBlockchainMeta
   | TransferBlockchainMeta
   | SolanaBlockchainMeta
-  | StarkNetBlockchainMeta
-  | TronBlockchainMeta
-  | TonBlockchainMeta
   | AptosBlockchainMeta
   | SuiBlockchainMeta;
 

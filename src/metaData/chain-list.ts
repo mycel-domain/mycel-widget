@@ -24,12 +24,13 @@ export const chainList = [
       infoType: "EvmMetaInfo",
       nativeCurrency: { decimals: 18, name: "ETH", symbol: "ETH" },
       rpcUrls: ["https://rpc.ankr.com/eth"],
-      transactionUrl: "https://etherscan.io/tx/{txHash}",
+      transactionUrl: "https://etherscan.io/tx/",
     },
     logo: "https://api.rango.exchange/blockchains/ethereum.svg",
     name: "ETHEREUM_MAINNET_MAINNET",
     shortName: "ETH",
     sort: 0,
+    isTestnet: false,
     type: "EVM",
   },
   {
@@ -54,12 +55,13 @@ export const chainList = [
       infoType: "EvmMetaInfo",
       nativeCurrency: { decimals: 18, name: "ETH", symbol: "ETH" },
       rpcUrls: ["https://rpc.ankr.com/eth_goerli"],
-      transactionUrl: "https://goerli.etherscan.io/tx/{txHash}",
+      transactionUrl: "https://goerli.etherscan.io/tx/",
     },
     logo: "https://api.rango.exchange/i/hncTcy",
     name: "ETHEREUM_TESTNET_GOERLI",
     shortName: "Goerli ETH",
     sort: 1,
+    isTestnet: true,
     type: "EVM",
   },
   {
@@ -69,15 +71,18 @@ export const chainList = [
     defaultDecimals: 9,
     displayName: "Solana",
     enabled: true,
-    feeAssets: [{ blockchain: "SOLANA", symbol: "SOL", address: null }],
+    feeAssets: [
+      { blockchain: "SOLANA_MAINNET_MAINNET", symbol: "SOL", address: null },
+    ],
     info: {
       blockExplorerUrls: ["https://explorer.solana.com"],
-      transactionUrl: "https://explorer.solana.com/tx/{txHash}?cluster",
+      transactionUrl: "https://explorer.solana.com/tx/",
     },
     logo: "https://api.rango.exchange/blockchains/solana.svg",
     name: "SOLANA_MAINNET_MAINNET",
     shortName: "Solana",
     sort: 17,
+    isTestnet: false,
     type: "SOLANA",
   },
   {
@@ -96,12 +101,13 @@ export const chainList = [
     ],
     info: {
       blockExplorerUrls: ["https://explorer.solana.com"],
-      transactionUrl: "https://explorer.solana.com/tx/{txHash}?cluster=testnet",
+      transactionUrl: "https://explorer.solana.com/tx/",
     },
     logo: "https://api.rango.exchange/blockchains/solana.svg",
     name: "SOLANA_TESTNET_TESTNET",
     shortName: "Solana Testnet",
     sort: 17,
+    isTestnet: true,
     type: "SOLANA",
   },
   {
@@ -120,13 +126,13 @@ export const chainList = [
     ],
     info: {
       blockExplorerUrls: ["https://explorer.aptoslabs.com"],
-      transactionUrl:
-        "https://explorer.aptoslabs.com/txn/275823155?network=mainnet",
+      transactionUrl: "https://explorer.aptoslabs.com/txn/",
     },
     logo: AptosLogo,
     name: "APTOS_MAINNET_MAINNET",
     shortName: "APTOS",
     sort: 15,
+    isTestnet: false,
     type: "APTOS",
   },
   {
@@ -145,13 +151,13 @@ export const chainList = [
     ],
     info: {
       blockExplorerUrls: ["https://explorer.aptoslabs.com"],
-      transactionUrl:
-        "https://explorer.aptoslabs.com/txn/275823155?network=testnet",
+      transactionUrl: "https://explorer.aptoslabs.com/txn/",
     },
     logo: AptosLogo,
     name: "APTOS_TESTNET_TESTNET",
     shortName: "APTOS Testnet",
     sort: 15,
+    isTestnet: true,
     type: "APTOS",
   },
   {
@@ -170,12 +176,13 @@ export const chainList = [
     ],
     info: {
       blockExplorerUrls: ["https://suiexplorer.com/"],
-      transactionUrl: "https://suiexplorer.com/address/{txHash}",
+      transactionUrl: "https://suiexplorer.com/address/",
     },
     logo: SuiLogo,
     name: "SUI_MAINNET_MAINNET",
     shortName: "SUI",
     sort: 15,
+    isTestnet: false,
     type: "SUI",
   },
   {
@@ -194,13 +201,13 @@ export const chainList = [
     ],
     info: {
       blockExplorerUrls: ["https://suiexplorer.com/"],
-      transactionUrl:
-        "https://suiexplorer.com/address/{txHash}?network=testnet",
+      transactionUrl: "https://suiexplorer.com/address/?network=testnet",
     },
     logo: SuiLogo,
     name: "SUI_TESTNET_TESTNET",
     shortName: "SUI Testnet",
     sort: 15,
+    isTestnet: true,
     type: "SUI",
   },
   {
@@ -226,6 +233,7 @@ export const chainList = [
     name: "BNB_MAINNET_MAINNET",
     shortName: "BSC",
     sort: 1,
+    isTestnet: false,
     type: "EVM",
   },
   {
@@ -245,12 +253,13 @@ export const chainList = [
     info: {
       addressUrl: "https://arbiscan.io/address/{wallet}",
       blockExplorerUrls: "https://arbiscan.io",
-      transactionUrl: "https://arbiscan.io/tx/{txHash}",
+      transactionUrl: "https://arbiscan.io/tx/",
     },
     logo: "https://api.rango.exchange/blockchains/arbitrum.svg",
     name: "ARBITRUM_MAINNET_MAINNET",
     shortName: "Arbitrum",
     sort: 2,
+    isTestnet: false,
     type: "EVM",
   },
   {
@@ -270,12 +279,13 @@ export const chainList = [
     info: {
       addressUrl: "https://polygonscan.com/address/{wallet}",
       blockExplorerUrls: "https://polygonscan.com",
-      transactionUrl: "https://polygonscan.com/tx/{txHash}",
+      transactionUrl: "https://polygonscan.com/tx/",
     },
     logo: "https://api.rango.exchange/blockchains/polygon.svg",
     name: "POLYGON_MAINNET_MAINNET",
     shortName: "Polygon",
     sort: 3,
+    isTestnet: false,
     type: "EVM",
   },
   {
@@ -295,12 +305,13 @@ export const chainList = [
     info: {
       addressUrl: "https://optimistic.etherscan.io/address/{wallet}",
       blockExplorerUrls: "https://optimistic.etherscan.io",
-      transactionUrl: "https://optimistic.etherscan.io/tx/{txHash}",
+      transactionUrl: "https://optimistic.etherscan.io/tx/",
     },
     logo: "https://api.rango.exchange/blockchains/optimism.svg",
     name: "OPTIMISM_MAINNET_MAINNET",
     shortName: "Optimisum",
     sort: 6,
+    isTestnet: false,
     type: "EVM",
   },
   {
@@ -320,12 +331,13 @@ export const chainList = [
     info: {
       addressUrl: "https://snowtrace.io/address/{wallet}",
       blockExplorerUrls: "https://snowtrace.io",
-      transactionUrl: "https://snowtrace.io/tx/{txHash}",
+      transactionUrl: "https://snowtrace.io/tx/",
     },
     logo: "https://api.rango.exchange/blockchains/avax_cchain.svg",
     name: "AVALANCHE_MAINNET_CCHAIN",
     shortName: "Avax",
     sort: 7,
+    isTestnet: false,
     type: "EVM",
   },
   {
@@ -341,12 +353,13 @@ export const chainList = [
     info: {
       addressUrl: "https://blockscout.com/xdai/mainnet/address/{wallet}",
       blockExplorerUrls: "https://rpc.gnosischain.com",
-      transactionUrl: "https://blockscout.com/xdai/mainnet/tx/{txHash}",
+      transactionUrl: "https://blockscout.com/xdai/mainnet/tx/",
     },
     logo: "https://api.rango.exchange/blockchains/gnosis.svg",
     name: "GNOSIS_MAINNET_MAINNET",
     shortName: "Gnosis",
     sort: 45,
+    isTestnet: false,
     type: "EVM",
   },
 ];

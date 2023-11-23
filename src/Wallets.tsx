@@ -8,7 +8,7 @@ import {
   walletAndSupportedChainsNames,
 } from './utils/wallets';
 import { useWalletsStore } from './store/wallets';
-import { isEvmBlockchain, WidgetConfig } from './types';
+import { isAptosBlockchain, isEvmBlockchain, isSolanaBlockchain, isSuiBlockchain, WidgetConfig } from './types';
 import { useWalletProviders } from './hooks/useWalletProviders';
 import { createContext, useRef } from 'react';
 import { ProvidersOptions } from './utils/providers';
@@ -41,6 +41,18 @@ export function WidgetWallets(
     .filter(isEvmBlockchain)
     .map((chain) => chain.name);
 
+  const solanaBasedChainNames = blockchains
+    .filter(isSolanaBlockchain)
+    .map((chain) => chain.name);
+
+  const aptosBasedChainNames = blockchains
+    .filter(isAptosBlockchain)
+    .map((chain) => chain.name);
+
+  const suiBasedChainNames = blockchains
+    .filter(isSuiBlockchain)
+    .map((chain) => chain.name);
+
   const onUpdateState: EventHandler = (
     type,
     event,
@@ -56,6 +68,9 @@ export function WidgetWallets(
           type,
           value,
           evmBasedChainNames,
+          solanaBasedChainNames,
+          aptosBasedChainNames,
+          suiBasedChainNames,
           supportedChainNames
         );
         connectWallet(data);
