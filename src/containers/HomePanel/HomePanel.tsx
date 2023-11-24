@@ -5,11 +5,13 @@ import {
   Typography,
   Header,
   HeaderButtons,
-  TokenInfo,
+  TokenAmountForm,
+  NameResolutionForm,
   useWallets,
   Spinner,
 } from "../..";
 import React, { useState } from "react";
+import { styled } from "@stitches/react";
 import {
   Transaction,
   Connection,
@@ -30,7 +32,6 @@ import {
 } from "../../types/api/main";
 import { useTransactionStore } from "../../store/transaction";
 import { parseAptos } from "../../utils/common";
-import { styled } from "@stitches/react";
 
 const Container = styled("div", {
   display: "flex",
@@ -103,17 +104,11 @@ export function HomePanel({
   fetchTransaction,
   swapButtonDisabled,
   fromChain,
-  toChain,
   fromToken,
-  toToken,
   setInputAmount,
   toAddress,
-  outputAmount,
   inputAmount,
   loadingStatus,
-  fetchingBestRoute,
-  outputUsdValue,
-  inputUsdValue,
   swapButtonTitle,
   onChainClick,
   onTokenClick,
@@ -124,21 +119,41 @@ export function HomePanel({
   swap,
   fromAmountRangeError,
   recommendation,
-  percentageChange,
-  tokenBalanceReal,
-  tokenBalance,
   swapFromAmount,
-  showPercentageChange,
 }: HomePanelProps) {
   const { getSigners } = useWallets();
   const [txHash, setTxHash] = useState<string>();
+  const [error, setError] = useState<string>("");
 
   const sendTx = async (type: TransactionType) => {
     const signer = getSigners(connectedWallets[0].walletType).getSigner(type);
-    const signerAddress = await signer.signer.getAddress();
     useTransactionStore.setState({ isSending: true });
 
     if (type === "EVM") {
+      if (connectedWallets[0].walletType === "okx") {
+        try {
+          if (connectedWallets[0].walletType === "okx") {
+            await window.okxwallet.request({
+              method: "wallet_switchEthereumChain",
+              params: [{ chainId: fromChain?.chainId }],
+            });
+          }
+        } catch (switchError) {
+          if (switchError.code === 4902) {
+            await window.okxwallet.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  chainId: fromChain?.chainId,
+                  chainName: fromChain?.displayName,
+                  rpcUrls: [fromChain?.info?.rpcUrls[0]],
+                },
+              ],
+            });
+          }
+        }
+      }
+      const signerAddress = await signer.signer.getAddress();
       try {
         const ethTx = {
           blockChain: "Ethreum",
@@ -173,9 +188,12 @@ export function HomePanel({
           "confirmed"
         );
 
-        const publicKey = signer.provider.publicKey.pubkey
-          ? signer.provider.publicKey.pubkey
-          : signer.provider._publicKey.toString();
+        const publicKey = signer.provider.publicKey;
+
+        //TODO: restore if bitget transaction is successfull
+        // const publicKey = signer.provider.publicKey.pubkey
+        //   ? signer.provider.publicKey.pubkey
+        //   : signer.provider._publicKey.toString();
 
         let blockhash = (await connection.getLatestBlockhash("finalized"))
           .blockhash;
@@ -189,11 +207,13 @@ export function HomePanel({
 
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = new PublicKey(publicKey);
-        const sig = await signer.signTransaction(transaction);
-        const raw = sig.serialize();
-        const signature = await connection.sendRawTransaction(raw);
+        const tx = await signer.signTransaction(transaction);
+        const rawTx = tx.transaction.serialize();
+        const signature = await connection.sendRawTransaction(rawTx);
         if (signature) {
-          setTxHash(signature);
+          setTxHash(
+            !fromChain?.isTestnet ? signature : `${signature}?cluster=testnet`
+          );
           useTransactionStore.setState({ isSending: false });
         }
       } catch (e) {
@@ -217,14 +237,13 @@ export function HomePanel({
 
         const pendingTransaction = await getSigners("petra")
           .getSigner("APTOS" as TransactionType)
-          .signAndSubmitTransaction(transaction); // same as below
-
-        // const pendingTransaction = await (
-        //   window as any
-        // ).bitkeep.aptos.signAndSubmitTransaction(transaction);
-
+          .signAndSubmitTransaction(transaction);
         if (pendingTransaction.hash) {
-          setTxHash(pendingTransaction.hash);
+          setTxHash(
+            !fromChain?.isTestnet
+              ? `${pendingTransaction.hash}?network=mainnet`
+              : `${pendingTransaction.hash}?network=testnet`
+          );
           client.waitForTransaction(pendingTransaction.hash);
           useTransactionStore.setState({ isSending: false });
         }
@@ -274,52 +293,21 @@ export function HomePanel({
       />
       <FromContainer>
         <>
-          <TokenInfo
-            type="From"
+          <TokenAmountForm
+            onAmountChange={setInputAmount}
             chain={fromChain}
             token={fromToken}
-            onAmountChange={setInputAmount}
-            inputAmount={inputAmount}
-            fromChain={fromChain}
-            toChain={toChain}
             loadingStatus={loadingStatus}
-            inputUsdValue={inputUsdValue}
-            fromToken={fromToken}
             setInputAmount={setInputAmount}
+            inputAmount={inputAmount}
             connectedWallets={connectedWallets}
-            bestRoute={bestRoute}
-            fetchingBestRoute={fetchingBestRoute}
             onChainClick={() => onChainClick("from-chain")}
             onTokenClick={() => onTokenClick("from-token")}
-            tokenBalanceReal={tokenBalanceReal}
-            tokenBalance={tokenBalance}
+            setError={setError}
           />
         </>
       </FromContainer>
-      <TokenInfo
-        type="To"
-        chain={toChain}
-        token={toToken}
-        outputAmount={outputAmount}
-        percentageChange={percentageChange}
-        outputUsdValue={outputUsdValue}
-        fromChain={fromChain}
-        toChain={toChain}
-        loadingStatus={loadingStatus}
-        inputUsdValue={inputUsdValue}
-        fromToken={fromToken}
-        setInputAmount={setInputAmount}
-        connectedWallets={connectedWallets}
-        inputAmount={inputAmount}
-        bestRoute={bestRoute}
-        fetchingBestRoute={fetchingBestRoute}
-        onChainClick={() => onChainClick("to-chain")}
-        onTokenClick={() => onTokenClick("to-token")}
-        tokenBalanceReal={tokenBalanceReal}
-        tokenBalance={tokenBalance}
-        showPercentageChange={showPercentageChange}
-      />
-
+      <NameResolutionForm chain={fromChain} setError={setError} />
       {(errorMessage || hasLimitError(bestRoute)) && (
         <Alerts>
           {errorMessage && <Alert type="error">{errorMessage}</Alert>}
@@ -349,12 +337,14 @@ export function HomePanel({
               </a>
             </div>
           </Alert>
-        ) : (
-          <Alert type="success">
+        ) : error ? (
+          <Alert type="error">
             <p style={{ fontSize: "small", overflowWrap: "anywhere" }}>
-              {txHash}
+              {error}
             </p>
           </Alert>
+        ) : (
+          <></>
         )}
         <Button
           type="primary"

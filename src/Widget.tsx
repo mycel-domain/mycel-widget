@@ -36,19 +36,13 @@ export function Main(props: PropsWithChildren<WidgetProps>) {
   globalFont(config?.theme?.fontFamily || "Roboto");
 
   const { activeTheme } = useTheme(config?.theme || {});
-  const [lastConnectedWalletWithNetwork, setLastConnectedWalletWithNetwork] =
-    useState<string>("");
+  const [
+    lastConnectedWalletWithNetwork,
+    setLastConnectedWalletWithNetwork,
+  ] = useState<string>("");
   const [disconnectedWallet, setDisconnectedWallet] = useState<WalletType>();
   const currentPage = useUiStore.use.currentPage();
   const widgetContext = useContext(WidgetContext);
-
-  useMemo(() => {
-    if (config?.apiKey) {
-      initConfig({
-        API_KEY: config?.apiKey,
-      });
-    }
-  }, [config]);
 
   useEffect(() => {
     useSettingsStore.persist.rehydrate();

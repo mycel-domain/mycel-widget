@@ -89,7 +89,7 @@ export const config = {
       },
     ],
   },
-  wallets: ["metamask", "bitget", "okx", "petra", "suiwallet"],
+  wallets: ["metamask", "bitget", "okx", "phantom", "petra"],
   theme: {
     mode: "dark",
     colors: {
@@ -105,5 +105,4 @@ export const config = {
     },
   },
   multiWallets: false,
-  apiKey: "c6381a79-2817-4602-83bf-6a641a409e32",
 };

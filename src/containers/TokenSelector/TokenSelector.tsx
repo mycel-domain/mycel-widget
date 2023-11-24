@@ -16,7 +16,6 @@ export const LoaderContainer = styled("div", {
 });
 export interface PropTypes {
   list: TokenWithAmount[];
-  type?: "Source" | "Destination";
   selected: TokenWithAmount | null;
   onChange: (token: TokenWithAmount) => void;
   onBack?: () => void;
@@ -33,14 +32,14 @@ const filterTokens = (list: TokenWithAmount[], searchedFor: string) =>
   );
 
 export function TokenSelector(props: PropTypes) {
-  const { list, type, selected, hasHeader, onChange, onBack, loadingStatus } =
+  const { list, selected, hasHeader, onChange, onBack, loadingStatus } =
     props;
 
   return (
     <SecondaryPage
       textField={true}
       hasHeader={hasHeader}
-      title={`Select ${type} token`}
+      title={"Select token"}
       onBack={onBack}
       textFieldPlaceholder="Search tokens by name"
     >

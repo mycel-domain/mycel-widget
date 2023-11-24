@@ -1,9 +1,5 @@
 import { create } from "zustand";
-import { httpService } from "../utils/httpService";
 import createSelectors from "./selectors";
-import { removeDuplicateFrom } from "../utils/common";
-import AptosLogo from "../assets/chains/aptos.svg";
-import SUILogo from "../assets/chains/sui.svg";
 import { MetaResponse } from "../types/api/main";
 import { chainList } from "../metaData/chain-list";
 import { tokenList } from "../metaData/token-list";

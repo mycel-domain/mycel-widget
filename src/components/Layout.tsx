@@ -37,8 +37,7 @@ export function Layout({ config }: LayoutProps) {
   const setAffiliatePercent = useSettingsStore.use.setAffiliatePercent();
   const setAffiliateWallets = useSettingsStore.use.setAffiliateWallets();
   const totalBalance = calculateWalletUsdValue(connectedWallets);
-  const connectWalletsButtonDisabled =
-    useUiStore.use.connectWalletsButtonDisabled();
+  const connectWalletsButtonDisabled = useUiStore.use.connectWalletsButtonDisabled();
   const loadingMetaStatus = useMetaStore.use.loadingStatus();
   const fetchingBalance = useWalletsStore(fetchingBalanceSelector);
 

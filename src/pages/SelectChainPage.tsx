@@ -4,42 +4,40 @@ import { useMetaStore } from "../store/meta";
 import { useNavigateBack } from "../hooks/useNavigateBack";
 import { navigationRoutes } from "../constants/navigationRoutes";
 import { BlockchainSelector } from "../containers";
-import { changeTargetName } from "../utils/common";
-import { RegistryNetworkName } from "mycel-client-ts/mycel.registry/rest";
+import { RegistryNetworkName } from "mycel-client-ts/mycel.resolver/rest";
+import { useWalletsStore } from "../store/wallets";
 
 interface PropTypes {
-  type: "from" | "to";
   supportedChains?: string[];
 }
 
 export function SelectChainPage(props: PropTypes) {
-  const { type, supportedChains } = props;
+  const { supportedChains } = props;
   const blockchains = supportedChains
     ? useMetaStore.use
         .meta()
         .blockchains.filter((chain) => supportedChains.includes(chain.name))
     : useMetaStore.use.meta().blockchains;
+  const connectedWallets = useWalletsStore.use.connectedWallets();
+  const walletChains = connectedWallets.map((wallet) => wallet.chain);
   const loadingStatus = useMetaStore.use.loadingStatus();
   const fromChain = useTransactionStore.use.fromChain();
-  const toChain = useTransactionStore.use.toChain();
   const setFromChain = useTransactionStore.use.setFromChain();
   const setTargetNetworkName = useTransactionStore.use.setTargetNetworkName();
-  const setToChain = useTransactionStore.use.setToChain();
+  const filteredChains = blockchains.filter((chain) =>
+    walletChains.includes(chain.name)
+  );
 
   const { navigateBackFrom } = useNavigateBack();
 
   return (
     <BlockchainSelector
-      type={type === "from" ? "Source" : "Destination"}
-      list={blockchains}
-      selected={type === "from" ? fromChain : toChain}
+      list={filteredChains}
+      selected={fromChain}
       loadingStatus={loadingStatus}
       onChange={(chain) => {
-        if (type === "from") {
-          setFromChain(chain, true);
-          const networkName = changeTargetName(chain.name as string);
-          setTargetNetworkName(networkName as RegistryNetworkName);
-        } else setToChain(chain, true);
+        setFromChain(chain, true);
+        setTargetNetworkName(chain.name as RegistryNetworkName);
         navigateBackFrom(navigationRoutes.fromChain);
       }}
       onBack={navigateBackFrom.bind(null, navigationRoutes.fromChain)}

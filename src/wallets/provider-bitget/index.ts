@@ -46,9 +46,10 @@ export const getInstance = bitgetInstances;
 
 export const connect: Connect = async ({ instance, meta }) => {
   const ethInstance = chooseInstance(instance, meta, Networks.ETHEREUM);
-  const solanaInstance = chooseInstance(instance, meta, Networks.SOLANA);
-  const aptosInstance = chooseInstance(instance, meta, Networks.APTOS);
-  const suiInstance = chooseInstance(instance, meta, Networks.SUI);
+  // TODO: commented out when adding solana aptos sui chains
+  // const solanaInstance = chooseInstance(instance, meta, Networks.SOLANA);
+  // const aptosInstance = chooseInstance(instance, meta, Networks.APTOS);
+  // const suiInstance = chooseInstance(instance, meta, Networks.SUI);
 
   const results: ProviderConnectResult[] = [];
 
@@ -57,41 +58,48 @@ export const connect: Connect = async ({ instance, meta }) => {
     results.push(evmResult);
   }
 
-  if (solanaInstance) {
-    const solanaAccounts = await getSolanaAccounts({
-      instance: solanaInstance,
-      meta,
-    });
-    results.push(solanaAccounts as ProviderConnectResult);
-  }
+  // if (solanaInstance) {
+  //   const solanaAccounts = await getSolanaAccounts({
+  //     instance: solanaInstance,
+  //     meta,
+  //   });
+  //   results.push(solanaAccounts as ProviderConnectResult);
+  //   console.log("solanaAccounts", solanaAccounts);
+  // }
 
-  if (aptosInstance) {
-    const aptosAccounts = await getAptosAccounts({
-      instance: aptosInstance,
-      meta: [],
-    });
-    results.push(aptosAccounts as ProviderConnectResult);
-  }
+  // if (aptosInstance) {
+  //   const aptosAccounts = await getAptosAccounts({
+  //     instance: aptosInstance,
+  //     meta: [],
+  //   });
+  //   results.push(aptosAccounts as ProviderConnectResult);
+  // }
 
-  if (suiInstance) {
-    const suiAccounts = await getSuiAccounts({
-      instance: suiInstance,
-      meta: [],
-    });
-    results.push(suiAccounts as ProviderConnectResult);
-  }
+  // if (suiInstance) {
+  //   const suiAccounts = await getSuiAccounts({
+  //     instance: suiInstance,
+  //     meta: [],
+  //   });
+  //   results.push(suiAccounts as ProviderConnectResult);
+  // }
 
   return results;
 };
 
 export const subscribe: Subscribe = (options) => {
-  const { connect, updateAccounts, state, updateChainId, meta, instance } =
-    options;
+  const {
+    connect,
+    updateAccounts,
+    state,
+    updateChainId,
+    meta,
+    instance,
+  } = options;
 
   const ethInstance = chooseInstance(instance, meta, Networks.ETHEREUM);
-  const solanaInstance = chooseInstance(instance, meta, Networks.SOLANA);
-  const aptosInstance = chooseInstance(instance, meta, Networks.APTOS);
-  const suiInstance = chooseInstance(instance, meta, Networks.SUI);
+  // const solanaInstance = chooseInstance(instance, meta, Networks.SOLANA);
+  // const aptosInstance = chooseInstance(instance, meta, Networks.APTOS);
+  // const suiInstance = chooseInstance(instance, meta, Networks.SUI);
 
   if (ethInstance) {
     ethInstance?.on("accountsChanged", (addresses: string[]) => {
@@ -107,50 +115,51 @@ export const subscribe: Subscribe = (options) => {
     });
   }
 
-  if (solanaInstance) {
-    solanaInstance?.on("accountChanged", async (publicKey: string) => {
-      if (state.network != Networks.SOLANA) {
-        updateChainId(meta.filter(isSolanaBlockchain)[0].chainId);
-      }
-      const network = Networks.SOLANA;
-      if (publicKey) {
-        const account = publicKey.toString();
-        updateAccounts([account]);
-      } else {
-        connect(network);
-      }
-    });
-  }
+  // if (solanaInstance) {
+  //   solanaInstance?.on("accountChanged", async (publicKey: string) => {
+  //     if (state.network != Networks.SOLANA) {
+  //       updateChainId(meta.filter(isSolanaBlockchain)[0].chainId);
+  //     }
+  //     const network = Networks.SOLANA;
+  //     if (publicKey) {
+  //       const account = publicKey.toString();
+  //       updateAccounts([account]);
+  //     } else {
+  //       connect(network);
+  //     }
+  //   });
+  // }
 
-  if (aptosInstance) {
-    aptosInstance?.on("accountChanged", async (publicKey: string) => {
-      if (state.network != Networks.APTOS) {
-        updateChainId(meta.filter(isAptosBlockchain)[0].chainId);
-      }
-      const network = Networks.APTOS;
-      if (publicKey) {
-        const account = publicKey.toString();
-        updateAccounts([account]);
-      } else {
-        connect(network);
-      }
-    });
-  }
+  // if (aptosInstance) {
+  //   aptosInstance?.on("accountChanged", async (publicKey: string) => {
+  //     if (state.network != Networks.APTOS) {
+  //       updateChainId(meta.filter(isAptosBlockchain)[0].chainId);
+  //     }
+  //     const network = Networks.APTOS;
+  //     console.log("aptosins", network);
+  //     if (publicKey) {
+  //       const account = publicKey.toString();
+  //       updateAccounts([account]);
+  //     } else {
+  //       connect(network);
+  //     }
+  //   });
+  // }
 
-  if (suiInstance) {
-    suiInstance?.on("accountChanged", async (publicKey: string) => {
-      if (state.network != Networks.SUI) {
-        updateChainId(meta.filter(isSuiBlockchain)[0].chainId);
-      }
-      const network = Networks.SUI;
-      if (publicKey) {
-        const account = publicKey.toString();
-        updateAccounts([account]);
-      } else {
-        connect(network);
-      }
-    });
-  }
+  // if (suiInstance) {
+  //   suiInstance?.on("accountChanged", async (publicKey: string) => {
+  //     if (state.network != Networks.SUI) {
+  //       updateChainId(meta.filter(isSuiBlockchain)[0].chainId);
+  //     }
+  //     const network = Networks.SUI;
+  //     if (publicKey) {
+  //       const account = publicKey.toString();
+  //       updateAccounts([account]);
+  //     } else {
+  //       connect(network);
+  //     }
+  //   });
+  // }
 };
 
 export const switchNetwork: SwitchNetwork = switchNetworkForEvm;
@@ -181,9 +190,9 @@ export const getWalletInfo: (allBlockChains: BlockchainMeta[]) => WalletInfo = (
   allBlockChains
 ) => {
   const evms = evmBlockchains(allBlockChains);
-  const solana = solanaBlockchain(allBlockChains);
-  const aptos = aptosBlockchain(allBlockChains);
-  const sui = suiBlockchain(allBlockChains);
+  // const solana = solanaBlockchain(allBlockChains);
+  // const aptos = aptosBlockchain(allBlockChains);
+  // const sui = suiBlockchain(allBlockChains);
   return {
     name: "Bitget",
     img: BitgetLogo,
@@ -195,6 +204,6 @@ export const getWalletInfo: (allBlockChains: BlockchainMeta[]) => WalletInfo = (
       DEFAULT: "https://web3.bitget.com/en/wallet-download?type=1",
     },
     color: "#ffffff",
-    supportedChains: [...evms, ...solana, ...aptos, ...sui],
+    supportedChains: [...evms],
   };
 };

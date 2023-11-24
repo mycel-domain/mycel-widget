@@ -9,8 +9,6 @@ import {
   TextField,
   Typography,
 } from '../..';
-import { useRegistryDomain } from '../../hooks/useRegistryDomain';
-import { RegistryDomain, RegistryNetworkName } from 'mycel-client-ts/mycel.registry/rest';
 import React from 'react';
 import { useTransactionStore } from '../../store/transaction';
 import { BlockchainMeta, ConnectedWallet } from '../../types';
@@ -18,16 +16,16 @@ import { BestRouteResponse, Token } from '../../types/api/main';
 
 type PropTypes = (
   | {
-      type: 'From';
-      onAmountChange: (amount: string) => void;
-    }
+    type: 'From';
+    onAmountChange: (amount: string) => void;
+  }
   | {
-      type: 'To';
-      outputAmount: string;
-      outputUsdValue: string;
-      percentageChange: string;
-      showPercentageChange: boolean;
-    }
+    type: 'To';
+    outputAmount: string;
+    outputUsdValue: string;
+    percentageChange: string;
+    showPercentageChange: boolean;
+  }
 ) & {
   chain: BlockchainMeta | null;
   token: Token | null;
@@ -133,29 +131,12 @@ export function TokenInfo(props: PropTypes) {
     onTokenClick,
   } = props;
 
-  const { registryDomain, updateRegistryDomain } = useRegistryDomain();
   const targetNetworkName = useTransactionStore.use.targetNetworkName();
   const toAddress = useTransactionStore.use.toAddress();
   const setToAddress = useTransactionStore.use.setToAddress();
   const [domainName, setDomainName] = React.useState("");
 
-  React.useEffect(() => {
-    if (registryDomain) {
-      const walletAddr = registryDomain ? getWalletAddr(registryDomain, targetNetworkName as RegistryNetworkName) : "";
-      setToAddress(walletAddr || "");
-    } else {
-      setToAddress("");
-    }
-  }, [registryDomain, targetNetworkName]);
 
-
-   React.useEffect(() => {
-    updateRegistryDomain(domainName)
-      .then()
-      .catch((e) => {
-        console.error(e);
-      });
-  }, [targetNetworkName, domainName]);
 
   const ItemSuffix = (
     <div
@@ -180,7 +161,7 @@ export function TokenInfo(props: PropTypes) {
               "To"
             )}
           </Typography>
-            {/* <Options> // TODO: Get balance
+          {/* <Options> // TODO: Get balance
               <div
                 className="balance"
                 onClick={() => {
@@ -259,8 +240,8 @@ export function TokenInfo(props: PropTypes) {
                 onChange={
                   type === 'From'
                     ? (event) => {
-                        props.onAmountChange(event.target.value);
-                      }
+                      props.onAmountChange(event.target.value);
+                    }
                     : undefined
                 }
               />
@@ -268,44 +249,44 @@ export function TokenInfo(props: PropTypes) {
           </div>
         ) : (
           <>
-          <div className="form">
-            <TextField
-              type="text"
-              size="large"
-              autoFocus
-              style={{
-                position: 'relative',
-                backgroundColor: '$background !important',
-              }}
-              suffix={
-                <span
-                  style={{
-                    position: 'absolute',
-                    right: '4px',
-                    bottom: '2px',
-                  }}>
-                  <Typography
-                    variant="caption"
-                    color="neutral800">{domainName}</Typography>
-                </span>
-              }
-              value={domainName}
-              onChange={(e) => {
-                setDomainName(e.target.value)
-              }}
-            />
-          </div>
-          {domainName && targetNetworkName && (
-            toAddress ? (
-          <p style={{color: '#000', overflowWrap: 'break-word'}}>
-            <span className="italic">{domainName}</span> on {targetNetworkName} is found: <span className="italic">{toAddress}</span>.
-          </p>
-        ) : (
-          <p style={{color: '#d80128', overflowWrap: 'break-word'}}className="m-2 text-sm text-red-500">
-            <span className="italic">{domainName}</span> doesn&apos;t exists in registry on {targetNetworkName}.
-          </p>
-        )
-          )}
+            <div className="form">
+              <TextField
+                type="text"
+                size="large"
+                autoFocus
+                style={{
+                  position: 'relative',
+                  backgroundColor: '$background !important',
+                }}
+                suffix={
+                  <span
+                    style={{
+                      position: 'absolute',
+                      right: '4px',
+                      bottom: '2px',
+                    }}>
+                    <Typography
+                      variant="caption"
+                      color="neutral800">{domainName}</Typography>
+                  </span>
+                }
+                value={domainName}
+                onChange={(e) => {
+                  setDomainName(e.target.value)
+                }}
+              />
+            </div>
+            {domainName && targetNetworkName && (
+              toAddress ? (
+                <p style={{ color: '#000', overflowWrap: 'break-word' }}>
+                  <span className="italic">{domainName}</span> on {targetNetworkName} is found: <span className="italic">{toAddress}</span>.
+                </p>
+              ) : (
+                <p style={{ color: '#d80128', overflowWrap: 'break-word' }} className="m-2 text-sm text-red-500">
+                  <span className="italic">{domainName}</span> doesn&apos;t exists in registry on {targetNetworkName}.
+                </p>
+              )
+            )}
           </>
         )}
       </Container>

@@ -77,9 +77,7 @@ export class DefaultEvmSigner implements GenericSigner<EvmTransaction> {
   ): Promise<{ hash: string; response: TransactionResponse }> {
     try {
       this.signer = this.provider.getSigner(tx.from ?? undefined);
-
       const transaction = DefaultEvmSigner.buildTx(tx);
-
       const signerChainId = await this.signer.getChainId();
       const convertedChainId = convertEvmChainId(signerChainId.toString())
       const signerAddress = await this.signer.getAddress();

@@ -38,8 +38,6 @@ export const config = {
 export const getInstance = petraInstances;
 
 export const connect: Connect = async ({ instance }) => {
-  console.log("instance", instance);
-
   const results: ProviderConnectResult[] = [];
 
   if (instance) {
@@ -54,8 +52,14 @@ export const connect: Connect = async ({ instance }) => {
 };
 
 export const subscribe: Subscribe = (options) => {
-  const { connect, updateAccounts, state, updateChainId, meta, instance } =
-    options;
+  const {
+    connect,
+    updateAccounts,
+    state,
+    updateChainId,
+    meta,
+    instance,
+  } = options;
 
   instance?.on("accountChanged", async (publicKey: string) => {
     if (state.network != Networks.APTOS) {
