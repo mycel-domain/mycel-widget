@@ -130,27 +130,23 @@ export function HomePanel({
     useTransactionStore.setState({ isSending: true });
 
     if (type === "EVM") {
-      if (connectedWallets[0].walletType === "okx") {
-        try {
-          if (connectedWallets[0].walletType === "okx") {
-            await window.okxwallet.request({
-              method: "wallet_switchEthereumChain",
-              params: [{ chainId: fromChain?.chainId }],
-            });
-          }
-        } catch (switchError) {
-          if (switchError.code === 4902) {
-            await window.okxwallet.request({
-              method: "wallet_addEthereumChain",
-              params: [
-                {
-                  chainId: fromChain?.chainId,
-                  chainName: fromChain?.displayName,
-                  rpcUrls: [fromChain?.info?.rpcUrls[0]],
-                },
-              ],
-            });
-          }
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: fromChain?.chainId }],
+        });
+      } catch (switchError) {
+        if (switchError.code === 4902) {
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainId: fromChain?.chainId,
+                chainName: fromChain?.displayName,
+                rpcUrls: [fromChain?.info?.rpcUrls[0]],
+              },
+            ],
+          });
         }
       }
       const signerAddress = await signer.signer.getAddress();
