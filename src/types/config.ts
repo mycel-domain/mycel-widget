@@ -134,4 +134,13 @@ export type WidgetConfig = {
   customDestination?: boolean;
   theme?: WidgetTheme;
   externalWallets?: boolean;
+  mycelEnv?: MycelEnv;
 };
+
+export type MycelEnv = {
+  apiURL: string;
+  rpcURL: string;
+  prefix: string;
+};
+
+

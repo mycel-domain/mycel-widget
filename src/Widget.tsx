@@ -19,6 +19,8 @@ import { WidgetEvents } from "./components/WidgetEvents";
 import { useSettingsStore } from "./store/settings";
 import { styled } from "./theme";
 import { SwapContainer } from "./UI";
+import { ClientProvider } from "./hooks/useClientProvider";
+import { env } from "./env";
 
 const MainContainer = styled("div", {
   width: "100%",
@@ -34,6 +36,7 @@ export type WidgetProps = {
 export function Main(props: PropsWithChildren<WidgetProps>) {
   const { config } = props;
   globalFont(config?.theme?.fontFamily || "Roboto");
+
 
   const { activeTheme } = useTheme(config?.theme || {});
   const [
@@ -76,7 +79,9 @@ export function Widget(props: PropsWithChildren<WidgetProps>) {
           walletConnectProjectId: props.config?.walletConnectProjectId,
         }}
       >
-        <Main {...props} />
+        <ClientProvider mycelEnv={props.config?.mycelEnv || env}>
+          <Main {...props} />
+        </ClientProvider>
       </WidgetWallets>
     );
   }

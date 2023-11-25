@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from "@stitches/react";
 import { BlockchainMeta } from '../../types';
+import { RegistryRecord, RegistryNetworkName } from "mycel-client-ts/mycel.resolver/rest";
 import {
   TextField,
   Typography,
 } from '../..';
-import { useMycelResolver } from '../../hooks/useMycelResolver';
+import { useClient } from "../../hooks/useClientProvider";
 import { useTransactionStore } from '../../store/transaction';
+import { convertToNameAndParent } from "../../utils/domainName";
 
 const Box = styled('div', {
   display: 'flex',
@@ -74,12 +76,35 @@ type NameResolutionFormProps = {
 }
 
 export function NameResolutionForm(props: NameResolutionFormProps) {
-  const { mycelRecords, updateMycelRecords, getWalletAddr } = useMycelResolver();
+  const { client } = useClient();
   const targetNetworkName = useTransactionStore.use.targetNetworkName();
   const setDomainName = useTransactionStore.use.setDomainName();
   const domainName = useTransactionStore.use.domainName();
   const toAddress = useTransactionStore.use.toAddress();
   const setToAddress = useTransactionStore.use.setToAddress();
+
+  const [mycelRecords, setMycelRecord] = useState<Record<string, RegistryRecord> | undefined>(
+    undefined
+  );
+
+  const queryAllRecords = async (name: string, parent: string) => {
+    try {
+      const record = await client.MycelResolver.query.queryAllRecords(name, parent);
+      setMycelRecord(record.data.values || undefined);
+    } catch (e) {
+      console.error(e);
+      setMycelRecord(undefined);
+    }
+  }
+
+  const getWalletAddr = (recordType: RegistryNetworkName) => {
+    if (!mycelRecords || !mycelRecords[recordType] || !mycelRecords[recordType].walletRecord) {
+      return "";
+    } else {
+      return mycelRecords[recordType].walletRecord?.value;
+    }
+  };
+
 
   useEffect(() => {
     if (domainName) {
@@ -98,11 +123,10 @@ export function NameResolutionForm(props: NameResolutionFormProps) {
 
 
   useEffect(() => {
-    updateMycelRecords(domainName)
-      .then()
-      .catch((e) => {
-        console.error(e);
-      });
+    if (domainName) {
+      const { name, parent } = convertToNameAndParent(domainName);
+      queryAllRecords(name, parent);
+    }
   }, [targetNetworkName, domainName]);
 
   return (
