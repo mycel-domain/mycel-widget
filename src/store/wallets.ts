@@ -2,13 +2,10 @@ import { WalletType } from "../wallets/shared";
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { shallow } from "zustand/shallow";
-import { httpService } from "../utils/httpService";
 import {
   getRequiredChains,
   getTokensWithBalance,
   isAccountAndWalletMatched,
-  makeBalanceFor,
-  resetConnectedWalletState,
   sortTokens,
 } from "../utils/wallets";
 import { useTransactionStore } from "./transaction";
@@ -131,8 +128,8 @@ export const useWalletsStore = createSelectors(
           selectedWallets: [],
         })),
       getWalletsDetails: async (accounts, shouldRetry = true) => {
-        const getWalletsDetails = get().getWalletsDetails;
-        const { tokens } = useMetaStore.getState().meta;
+        // const getWalletsDetails = get().getWalletsDetails;
+        // const { tokens } = useMetaStore.getState().meta;
         set((state) => ({
           connectedWallets: state.connectedWallets.map((wallet) => {
             return accounts.find((account) =>
@@ -142,54 +139,6 @@ export const useWalletsStore = createSelectors(
               : wallet;
           }),
         }));
-        try {
-          const data = accounts.map(({ address, chain }) => ({
-            address,
-            blockchain: chain,
-          }));
-          const response = await httpService().getWalletsDetails(data);
-          const retrivedBalance = response.wallets;
-          if (retrivedBalance) {
-            set((state) => ({
-              connectedWallets: state.connectedWallets.map(
-                (connectedWallet) => {
-                  const matchedAccount = accounts.find((account) =>
-                    isAccountAndWalletMatched(account, connectedWallet)
-                  );
-                  const retrivedBalanceAccount = retrivedBalance.find(
-                    (balance) =>
-                      balance.address === connectedWallet.address &&
-                      balance.blockChain === connectedWallet.chain
-                  );
-                  if (
-                    retrivedBalanceAccount?.failed &&
-                    matchedAccount &&
-                    shouldRetry
-                  ) {
-                    getWalletsDetails([matchedAccount], false);
-                  }
-                  return matchedAccount && retrivedBalanceAccount
-                    ? makeBalanceFor(
-                        matchedAccount,
-                        retrivedBalanceAccount,
-                        tokens
-                      )
-                    : connectedWallet;
-                }
-              ),
-            }));
-          } else throw new Error("Wallet not found");
-        } catch (error) {
-          set((state) => ({
-            connectedWallets: state.connectedWallets.map((balance) => {
-              return accounts.find((account) =>
-                isAccountAndWalletMatched(account, balance)
-              )
-                ? resetConnectedWalletState(balance)
-                : balance;
-            }),
-          }));
-        }
       },
     }))
   )

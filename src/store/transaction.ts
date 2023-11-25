@@ -17,7 +17,7 @@ import {
 import { useWalletsStore } from "./wallets";
 import { TokenWithBalance } from "../pages/SelectTokenPage";
 import { isPositiveNumber } from "../utils/numbers";
-import { RegistryNetworkName } from "mycel-client-ts/mycel.registry/rest";
+import { RegistryNetworkName } from "mycel-client-ts/mycel.resolver/rest";
 import { BestRouteResponse, BlockchainMeta, Token } from "../types/api/main";
 
 const getUsdValue = (token: Token | null, amount: string): BigNumber | null =>
@@ -25,11 +25,13 @@ const getUsdValue = (token: Token | null, amount: string): BigNumber | null =>
     ? new BigNumber(amount || ZERO).multipliedBy(token?.usdPrice || 0)
     : null;
 
+//Todo: fix/refactor-fromで削除されたstateの影響でautoConnectが動かなくなっていたので、一旦restore
 export interface TransactionState {
   fromChain: BlockchainMeta | null;
   toChain: BlockchainMeta | null;
   toAddress: string | null;
   inputAmount: string;
+  domainName: string;
   inputUsdValue: BigNumber | null;
   outputAmount: BigNumber | null;
   outputUsdValue: BigNumber | null;
@@ -40,6 +42,7 @@ export interface TransactionState {
   loading: boolean;
   error: string;
   sourceTokens: Token[];
+  fromTokens: Token[];
   destinationTokens: Token[];
   setTargetNetworkName: (chain: RegistryNetworkName) => void;
   setToAddress: (address: string) => void;
@@ -52,6 +55,7 @@ export interface TransactionState {
   setFromToken: (token: Token | null) => void;
   setToToken: (token: Token | null) => void;
   setInputAmount: (amount: string) => void;
+  setDomainName: (domainName: string) => void;
   bestRoute: BestRouteResponse | null;
   setBestRoute: (bestRoute: BestRouteResponse | null) => void;
   retry: (pendingSwap: any) => void;
@@ -64,6 +68,7 @@ export const useTransactionStore = createSelectors(
       fromChain: null,
       fromToken: null,
       inputAmount: "",
+      domainName: "",
       outputAmount: null,
       targetNetworkName: null,
       inputUsdValue: new BigNumber(0),
@@ -76,6 +81,7 @@ export const useTransactionStore = createSelectors(
       loading: false,
       error: "",
       sourceTokens: [],
+      fromTokens: [],
       destinationTokens: [],
       setBestRoute: (bestRoute) =>
         set((state) => {
@@ -121,6 +127,7 @@ export const useTransactionStore = createSelectors(
           const fromToken = getDefaultToken(sortedTokens, state.toToken);
           return {
             fromChain: chain,
+            fromTokens: sortedTokens,
             sourceTokens: sortedTokens,
             ...(setDefaultToken && {
               fromToken,
@@ -169,6 +176,10 @@ export const useTransactionStore = createSelectors(
       setToAddress: (address) =>
         set(() => ({
           toAddress: address,
+        })),
+      setDomainName: (domain) =>
+        set(() => ({
+          domainName: domain,
         })),
       setInputAmount: (amount) => {
         set((state) => ({
@@ -272,8 +283,12 @@ export const useTransactionStore = createSelectors(
 const transactionState = (trasactionStore: typeof useTransactionStore) => {
   let abortController: AbortController | null = null;
   const fetchTransaction = () => {
-    const { fromToken, toToken, inputAmount, resetRoute } =
-      trasactionStore.getState();
+    const {
+      fromToken,
+      toToken,
+      inputAmount,
+      resetRoute,
+    } = trasactionStore.getState();
     if (!fromToken || !toToken || !isPositiveNumber(inputAmount)) return;
     abortController?.abort();
     abortController = new AbortController();
@@ -284,8 +299,12 @@ const transactionState = (trasactionStore: typeof useTransactionStore) => {
   };
 
   const bestRouteParamsListener = () => {
-    const { fromToken, toToken, inputAmount, inputUsdValue } =
-      useTransactionStore.getState();
+    const {
+      fromToken,
+      toToken,
+      inputAmount,
+      inputUsdValue,
+    } = useTransactionStore.getState();
     if (!isPositiveNumber(inputAmount) || inputUsdValue?.eq(0))
       return trasactionStore.setState({ loading: false });
 

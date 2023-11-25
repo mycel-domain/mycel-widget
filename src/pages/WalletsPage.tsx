@@ -65,14 +65,12 @@ export function WalletsPage({
     }) || ALL_SUPPORTED_WALLETS
   );
   const walletsRef = useRef<WalletInfo[]>();
-
   let sortedWallets = detectMobileScreens()
     ? wallets.filter((wallet) => wallet.showOnMobile)
     : wallets;
   sortedWallets = sortWalletsBasedOnState(sortedWallets);
   const [walletErrorMessage, setWalletErrorMessage] = useState("");
-  const toggleConnectWalletsButton =
-    useUiStore.use.toggleConnectWalletsButton();
+  const toggleConnectWalletsButton = useUiStore.use.toggleConnectWalletsButton();
   const loadingMetaStatus = useMetaStore.use.loadingStatus();
 
   const onSelectWallet = async (type: WalletType) => {

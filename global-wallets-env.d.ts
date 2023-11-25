@@ -30,6 +30,7 @@ declare global {
     enkrypt: any;
     tally: any;
     bitkeep: any;
+    petra: any;
     mytonwallet: any;
   }
 }

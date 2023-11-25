@@ -24,7 +24,6 @@ const filterBlockchains = (list: BlockchainMeta[], searchedFor: string) =>
   );
 
 export interface PropTypes {
-  type?: "Source" | "Destination";
   list: BlockchainMeta[];
   selected?: BlockchainMeta | null;
   onChange: (blockchain: BlockchainMeta) => void;
@@ -38,7 +37,6 @@ export interface PropTypes {
 
 export function BlockchainSelector(props: PropTypes) {
   const {
-    type,
     list,
     onChange,
     selected,
@@ -55,7 +53,7 @@ export function BlockchainSelector(props: PropTypes) {
       textField={true}
       hasHeader={hasHeader}
       textFieldPlaceholder="Search blockchains by name"
-      title={`Select ${type} Blockchain`}
+      title={"Select Blockchain"}
       onBack={onBack}
     >
       {(searchedFor) => {

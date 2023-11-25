@@ -51,12 +51,9 @@ export function getlistWallet(
   return list
     .filter((wallet) => !excludedWallets.includes(wallet as WalletTypes))
     .map((type) => {
-      const {
-        name,
-        img: image,
-        installLink,
-        showOnMobile,
-      } = getWalletInfo(type);
+      const { name, img: image, installLink, showOnMobile } = getWalletInfo(
+        type
+      );
       const state = getStateWallet(getState(type));
       return {
         name,
@@ -85,6 +82,9 @@ export function prepareAccountsForWalletStore(
   wallet: WalletType,
   accounts: string[],
   evmBasedChains: string[],
+  solanaBasedChains: string[],
+  aptosBasedChains: string[],
+  suiBasedChains: string[],
   supportedChainNames: Network[] | null
 ): Wallet[] {
   const result: Wallet[] = [];
@@ -116,7 +116,7 @@ export function prepareAccountsForWalletStore(
 
     // Here we check given `network` is not supported by wallet
     // And also the network is known.
-    if (notSupportedNetworkByWallet) return;
+    // if (notSupportedNetworkByWallet) return;
 
     // In some cases we can handle unknown network by checking its address
     // pattern and act on it.
@@ -142,7 +142,27 @@ export function prepareAccountsForWalletStore(
         addAccount(network, address.toLowerCase());
       });
     } else {
-      addAccount(network, address);
+      const solanaChainsSupportedByWallet = supportedChains.filter((chain) =>
+        solanaBasedChains.includes(chain)
+      );
+      const aptosChainsSupportedByWallet = supportedChains.filter((chain) =>
+        aptosBasedChains.includes(chain)
+      );
+      const suiChainsSupportedByWallet = supportedChains.filter((chain) =>
+        suiBasedChains.includes(chain)
+      );
+
+      solanaChainsSupportedByWallet.forEach((network) => {
+        addAccount(network, address.toLowerCase());
+      });
+
+      aptosChainsSupportedByWallet.forEach((network) => {
+        addAccount(network, address.toLowerCase());
+      });
+
+      suiChainsSupportedByWallet.forEach((network) => {
+        addAccount(network, address.toLowerCase());
+      });
     }
   });
 
