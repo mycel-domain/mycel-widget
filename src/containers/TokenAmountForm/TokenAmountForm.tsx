@@ -6,11 +6,11 @@ import {
   Divider,
   Image,
   InfoCircleIcon,
-  styled,
   TextField,
   Typography,
 } from '../..';
 import { TokenWithBalance } from "../../types/meta";
+import { styled } from "@stitches/react";
 
 const Box = styled('div', {
   display: 'flex',

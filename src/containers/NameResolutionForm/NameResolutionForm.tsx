@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
+import { styled } from "@stitches/react";
 import { BlockchainMeta } from '../../types';
 import {
-  styled,
   TextField,
   Typography,
 } from '../..';
