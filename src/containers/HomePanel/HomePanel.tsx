@@ -130,10 +130,11 @@ export function HomePanel({
     useTransactionStore.setState({ isSending: true });
 
     if (type === "EVM") {
+      const hex_chainId = ethers.utils.hexValue(Number(fromChain?.chainId));
       try {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: fromChain?.chainId }],
+          params: [{ chainId: hex_chainId }],
         });
       } catch (switchError) {
         if (switchError.code === 4902) {
@@ -141,9 +142,14 @@ export function HomePanel({
             method: "wallet_addEthereumChain",
             params: [
               {
-                chainId: fromChain?.chainId,
+                chainId: hex_chainId,
                 chainName: fromChain?.displayName,
                 rpcUrls: [fromChain?.info?.rpcUrls[0]],
+                nativeCurrency: {
+                  decimals: fromChain?.defaultDecimals,
+                  name: fromChain?.shortName,
+                  symbol: fromChain?.feeAssets[0].symbol,
+                },
               },
             ],
           });

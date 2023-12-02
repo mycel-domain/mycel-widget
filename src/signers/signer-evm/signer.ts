@@ -4,7 +4,7 @@ import {
 } from '@ethersproject/abstract-provider';
 import type { GenericSigner } from '../../types';
 import { EvmTransaction } from '../../types/api/main/txs';
-import { providers } from 'ethers';
+import { ethers, providers } from 'ethers';
 import { cleanEvmError, getTenderlyError, waitMs } from './helper';
 import {
   RPCErrorCode as RangoRPCErrorCode,
@@ -77,11 +77,12 @@ export class DefaultEvmSigner implements GenericSigner<EvmTransaction> {
   ): Promise<{ hash: string; response: TransactionResponse }> {
     try {
       this.signer = this.provider.getSigner(tx.from ?? undefined);
+
       const transaction = DefaultEvmSigner.buildTx(tx);
       const signerChainId = await this.signer.getChainId();
       const convertedChainId = convertEvmChainId(signerChainId.toString())
       const signerAddress = await this.signer.getAddress();
-      if (!!chainId && !!signerChainId && convertedChainId !== chainId) {
+      if (!!chainId && !!signerChainId && chainId !== signerChainId.toString() ) {
         throw new SignerError(
           SignerErrorCode.UNEXPECTED_BEHAVIOUR,
           undefined,
