@@ -2,7 +2,6 @@ import React, {
   PropsWithChildren,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import { AppRouter } from "./components/AppRouter";
@@ -13,7 +12,6 @@ import { useTheme } from "./hooks/useTheme";
 import { WidgetConfig } from "./types";
 import { useUiStore } from "./store/ui";
 import { navigationRoutes } from "./constants/navigationRoutes";
-import { initConfig } from "./utils/configs";
 import { WidgetContext, WidgetWallets } from "./Wallets";
 import { WidgetEvents } from "./components/WidgetEvents";
 import { useSettingsStore } from "./store/settings";
@@ -36,7 +34,6 @@ export type WidgetProps = {
 export function Main(props: PropsWithChildren<WidgetProps>) {
   const { config } = props;
   globalFont(config?.theme?.fontFamily || "Roboto");
-
 
   const { activeTheme } = useTheme(config?.theme || {});
   const [
