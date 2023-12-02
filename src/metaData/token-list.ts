@@ -308,7 +308,7 @@ export const tokenList = [
     image: ZetaLogo,
     isPopular: true,
     isSecondaryCoin: false,
-    symbol: "ZETA",
+    symbol: "aZETA",
     usdPrice: null,
     type: "EVM",
   },
