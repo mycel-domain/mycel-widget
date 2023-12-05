@@ -127,18 +127,21 @@ export function HomePanel({
 
   const sendTx = async (type: TransactionType) => {
     const signer = getSigners(connectedWallets[0].walletType).getSigner(type);
+    // Web3Provider.provider
+    const provider = signer.provider.provider;
+
     useTransactionStore.setState({ isSending: true });
 
     if (type === "EVM") {
       const hex_chainId = ethers.utils.hexValue(Number(fromChain?.chainId));
       try {
-        await window.ethereum.request({
+        await provider.request({
           method: "wallet_switchEthereumChain",
           params: [{ chainId: hex_chainId }],
         });
       } catch (switchError) {
         if (switchError.code === 4902) {
-          await window.ethereum.request({
+          await provider.request({
             method: "wallet_addEthereumChain",
             params: [
               {

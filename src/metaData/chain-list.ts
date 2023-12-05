@@ -222,7 +222,7 @@ export const chainList = [
   },
   {
     addressPatterns: ["^(0x)[0-9A-Fa-f]{40}$"],
-    chainId: "0x38",
+    chainId: "56",
     color: "#F3BA2F",
     defaultDecimals: 18,
     displayName: "BNB Smart Chain",
@@ -330,7 +330,7 @@ export const chainList = [
   },
   {
     addressPatterns: ["^(0x)[0-9A-Fa-f]{40}$"],
-    chainId: "0x89",
+    chainId: "137",
     color: "#8247E5",
     defaultDecimals: 18,
     displayName: "Polygon",
@@ -492,7 +492,7 @@ export const chainList = [
   },
   {
     addressPatterns: ["^(0x)[0-9A-Fa-f]{40}$"],
-    chainId: "0x64",
+    chainId: "100",
     color: "#3E6957",
     defaultDecimals: 18,
     displayName: "Gnosis",
