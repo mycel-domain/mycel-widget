@@ -27,6 +27,25 @@ export type {
 }
 
 /**
+ * All metadata info for a external token, especially uniswap tokens, unique by (blockchain, symbol, address) tuple
+ *
+ * @property {string | null} address - Smart contract address of token, null for native tokens
+ * @property {string} symbol - The token symbol, e.g: ADA
+ * @property {string | null} name - Display name of token, e.g: Cardano for ADA. It can be null
+ * @property {number} decimals - Decimals of token in blockchain, example: 18
+ * @property {string} lgoURI - Url of its image
+ *
+ */
+export type ExternalToken = {
+  address: string | null
+  chainId : number
+  symbol: string
+  name: string | null
+  decimals: number
+  logoURI: string
+}
+
+/**
  * All metadata info for a token, unique by (blockchain, symbol, address) tuple
  *
  * @property {string} blockchain - The blockchain which this token belongs to
@@ -49,12 +68,13 @@ export type Token = {
   symbol: string
   name: string | null
   decimals: number
-  image: string
+  logoURI: string
   usdPrice: number | null
   isSecondaryCoin: boolean
   coinSource: string | null
   coinSourceUrl: string | null
   isPopular: boolean
+  isNative: boolean
   supportedSwappers?: string[]
 }
 

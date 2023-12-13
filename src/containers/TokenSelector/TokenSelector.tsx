@@ -32,8 +32,7 @@ const filterTokens = (list: TokenWithAmount[], searchedFor: string) =>
   );
 
 export function TokenSelector(props: PropTypes) {
-  const { list, selected, hasHeader, onChange, onBack, loadingStatus } =
-    props;
+  const { list, selected, hasHeader, onChange, onBack, loadingStatus } = props;
 
   return (
     <SecondaryPage

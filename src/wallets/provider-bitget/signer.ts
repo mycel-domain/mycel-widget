@@ -11,13 +11,13 @@ import { DefaultSuiSigner } from "../../signers/signer-sui";
 
 export default function getSigners(provider: any): SignerFactory {
   const ethProvider = getNetworkInstance(provider, Networks.ETHEREUM);
-  const solProvider = getNetworkInstance(provider, Networks.SOLANA);
+  const solProvidper = getNetworkInstance(provider, Networks.SOLANA);
   const aptProvider = getNetworkInstance(provider, Networks.APTOS);
   const suiProvider = getNetworkInstance(provider, Networks.SUI);
 
   const signers = new DefaultSignerFactory();
   signers.registerSigner(TxType.EVM, new DefaultEvmSigner(ethProvider));
-  signers.registerSigner(TxType.SOLANA, new DefaultSolanaSigner(solProvider));
+  signers.registerSigner(TxType.SOLANA, new DefaultSolanaSigner(solProvidper));
   signers.registerSigner(TxType.APTOS, new DefaultAptosSigner(aptProvider));
   signers.registerSigner(TxType.SUI, new DefaultSuiSigner(suiProvider));
 

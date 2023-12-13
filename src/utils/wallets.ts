@@ -26,7 +26,7 @@ import BigNumber from "bignumber.js";
 import { TokenWithBalance } from "../pages/SelectTokenPage";
 import { ZERO } from "../constants/numbers";
 import { Wallet } from "../types";
-import { BestRouteResponse, Token } from "../types/api/main";
+import { BestRouteResponse, ExternalToken, Token } from "../types/api/main";
 
 export function getStateWallet(state: WalletState): WalletStatus {
   switch (true) {
@@ -480,6 +480,27 @@ export function getSortedTokens(
     (token) => token.blockchain === chain?.name
   );
   return sortTokens(getTokensWithBalance(filteredTokens, connectedWallets));
+}
+
+export function getSortedTokenList(
+  chain: BlockchainMeta | null,
+  tokens: ExternalToken[]
+) {
+  const filteredTokens = tokens.filter(
+    (token) => token.chainId.toString() === chain?.chainId
+  );
+  return filteredTokens;
+}
+
+export function removeDublicatedTokens(
+  supportedToken: TokenWithBalance,
+  externalTokens: ExternalToken[] | TokenWithBalance[]
+) {
+  const filteredTokens = externalTokens.filter(
+    (token) =>
+      token.address?.toLowerCase() !== supportedToken.address?.toLowerCase()
+  );
+  return filteredTokens as TokenWithBalance[];
 }
 
 export function tokensAreEqual(

@@ -50,7 +50,7 @@ export function TokenItem(props: PropTypes) {
         type={selected ? "primary" : undefined}
         prefix={
           <TokenImageContainer>
-            <Image src={token.image} size={32} />
+            <Image src={token.logoURI} size={32} />
           </TokenImageContainer>
         }
         suffix={

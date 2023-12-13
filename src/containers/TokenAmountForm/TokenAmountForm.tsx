@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { BlockchainMeta, ConnectedWallet } from '../../types';
+import React, { useEffect } from "react";
+import { BlockchainMeta, ConnectedWallet } from "../../types";
 import {
   AngleDownIcon,
   Button,
@@ -8,59 +8,59 @@ import {
   InfoCircleIcon,
   TextField,
   Typography,
-} from '../..';
+} from "../..";
 import { TokenWithBalance } from "../../types/meta";
 import { styled } from "@stitches/react";
 
-const Box = styled('div', {
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  overflow: 'hidden',
+const Box = styled("div", {
+  display: "flex",
+  flexDirection: "column",
+  width: "100%",
+  overflow: "hidden",
 });
 
-const Container = styled('div', {
-  boxSizing: 'border-box',
-  borderRadius: '$5',
-  padding: '$8 $16 $16 $16',
+const Container = styled("div", {
+  boxSizing: "border-box",
+  borderRadius: "$5",
+  padding: "$8 $16 $16 $16",
 
   variants: {
     type: {
       filled: {
-        backgroundColor: '$neutral100',
+        backgroundColor: "$neutral100",
       },
       outlined: {
-        border: '1px solid $neutral100',
-        backgroundColor: '$surface',
+        border: "1px solid $neutral100",
+        backgroundColor: "$surface",
       },
     },
   },
 
   defaultVariants: {
-    type: 'filled',
+    type: "filled",
   },
 
-  '.head': {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    minHeight: '32px',
+  ".head": {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    minHeight: "32px",
   },
-  '.form': {
-    display: 'flex',
-    width: '100%',
-    padding: '$2 0',
-    '.selectors': {
-      width: '35%',
+  ".form": {
+    display: "flex",
+    width: "100%",
+    padding: "$2 0",
+    ".selectors": {
+      width: "35%",
 
-      '._text': {
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
+      "._text": {
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
       },
     },
-    '.amount': {
-      width: '30%',
+    ".amount": {
+      width: "30%",
     },
   },
 });
@@ -69,14 +69,14 @@ type TokenAmountFormProps = {
   onAmountChange: (amount: string) => void;
   chain: BlockchainMeta | null;
   token: TokenWithBalance | null;
-  loadingStatus: 'loading' | 'success' | 'failed';
+  loadingStatus: "loading" | "success" | "failed";
   setInputAmount: (amount: string) => void;
   connectedWallets: ConnectedWallet[];
   inputAmount: string;
   setError: (error: string) => void;
   onChainClick: () => void;
   onTokenClick: () => void;
-}
+};
 
 export function TokenAmountForm(props: TokenAmountFormProps) {
   const {
@@ -91,40 +91,40 @@ export function TokenAmountForm(props: TokenAmountFormProps) {
 
   useEffect(() => {
     if (chain && token) {
-      setError('');
+      setError("");
     } else {
-      setError('Please select a chain and token');
+      setError("Please select a chain and token");
     }
     if (inputAmount) {
-      setError('');
+      setError("");
     } else {
-      setError('Please enter an valid amount');
+      setError("Please enter an valid amount");
     }
-
   }, [chain, token, inputAmount]);
 
-  const ImagePlaceholder = styled('span', {
-    width: '24px',
-    height: '24px',
-    backgroundColor: '$neutral100',
-    borderRadius: '99999px',
+  const ImagePlaceholder = styled("span", {
+    width: "24px",
+    height: "24px",
+    backgroundColor: "$neutral100",
+    borderRadius: "99999px",
   });
 
   const ItemSuffix = (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      {loadingStatus === 'failed' && <InfoCircleIcon color="error" size={24} />}
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {loadingStatus === "failed" && <InfoCircleIcon color="error" size={24} />}
       <AngleDownIcon />
     </div>
   );
 
   return (
     <Box>
-      <Container type={'filled'}>
+      <Container type={"filled"}>
         <div className="head">
           <Typography variant="body2" color="neutral800">
             Token Info
@@ -135,10 +135,10 @@ export function TokenAmountForm(props: TokenAmountFormProps) {
             className="selectors"
             onClick={onChainClick}
             variant="outlined"
-            disabled={loadingStatus === 'failed'}
-            loading={loadingStatus === 'loading'}
+            disabled={loadingStatus === "failed"}
+            loading={loadingStatus === "loading"}
             prefix={
-              loadingStatus === 'success' && chain ? (
+              loadingStatus === "success" && chain ? (
                 <Image src={chain.logo} size={24} />
               ) : (
                 <ImagePlaceholder />
@@ -146,30 +146,28 @@ export function TokenAmountForm(props: TokenAmountFormProps) {
             }
             suffix={ItemSuffix}
             align="start"
-            size="large">
-            {loadingStatus === 'success' && chain
-              ? chain.displayName
-              : 'Chain'}
+            size="large"
+          >
+            {loadingStatus === "success" && chain ? chain.displayName : "Chain"}
           </Button>
           <Divider size={12} direction="horizontal" />
           <Button
             className="selectors"
             onClick={onTokenClick}
             variant="outlined"
-            loading={loadingStatus === 'loading'}
+            loading={loadingStatus === "loading"}
             prefix={
-              loadingStatus === 'success' && token ? (
-                <Image src={token.image} size={24} />
+              loadingStatus === "success" && token ? (
+                <Image src={token.logoURI} size={24} />
               ) : (
                 <ImagePlaceholder />
               )
             }
             suffix={ItemSuffix}
             size="large"
-            align="start">
-            {loadingStatus === 'success' && token
-              ? token.symbol
-              : 'Token'}
+            align="start"
+          >
+            {loadingStatus === "success" && token ? token.symbol : "Token"}
           </Button>
           <Divider size={12} direction="horizontal" />
           <div className="amount">
@@ -179,28 +177,27 @@ export function TokenAmountForm(props: TokenAmountFormProps) {
               autoFocus
               placeholder="0"
               style={{
-                position: 'relative',
-                backgroundColor: '$background !important',
+                position: "relative",
+                backgroundColor: "$background !important",
               }}
-              value={inputAmount || ''}
+              value={inputAmount || ""}
               min={0}
               suffix={
                 <span
                   style={{
-                    position: 'absolute',
-                    right: '4px',
-                    bottom: '2px',
-                  }}>
-                  <Typography
-                    variant="caption"
-                    color="neutral800">{token ? token.symbol : ""}</Typography>
+                    position: "absolute",
+                    right: "4px",
+                    bottom: "2px",
+                  }}
+                >
+                  <Typography variant="caption" color="neutral800">
+                    {token ? token.symbol : ""}
+                  </Typography>
                 </span>
               }
-              onChange={
-                (event) => {
-                  props.onAmountChange(event.target.value);
-                }
-              }
+              onChange={(event) => {
+                props.onAmountChange(event.target.value);
+              }}
             />
           </div>
         </div>
@@ -208,4 +205,3 @@ export function TokenAmountForm(props: TokenAmountFormProps) {
     </Box>
   );
 }
-
