@@ -1,6 +1,6 @@
 {
   "name": "mycel-widget",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "type": "module",
   "description": "Widget powered by mycel",
   "main": "./dist/index.umd.cjs",
