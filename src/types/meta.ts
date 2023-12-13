@@ -3,10 +3,11 @@ import { Token } from "./api/main";
 export type TokenMeta = {
   blockchain: string;
   symbol: string;
-  image: string;
+  logoURI: string;
   address: string | null;
   usdPrice: number | null;
   isSecondaryCoin: boolean;
+  isNative: boolean;
   coinSource: string | null;
   coinSourceUrl: string | null;
   name: string | null;

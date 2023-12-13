@@ -1,5 +1,3 @@
-import { RegistryNetworkName } from "mycel-client-ts/mycel.registry/rest";
-
 export function removeDuplicateFrom<T>(array: T[]): T[] {
   return Array.from(new Set(array));
 }
@@ -38,4 +36,15 @@ export function convertEvmChainId(chainId: string) {
 export function parseAptos(apt: string) {
   const calculatedApt = parseFloat(apt) * 100000000;
   return calculatedApt.toFixed().toString();
+}
+
+export function replaceIPFSUrlToHTTP(url: string): string {
+  const ipfsPrefix = "ipfs://";
+  const httpPrefix = "https://cloudflare-ipfs.com/ipfs/";
+
+  if (url.startsWith(ipfsPrefix)) {
+    return url.replace(ipfsPrefix, httpPrefix);
+  }
+
+  return url; // Return the original URL if it doesn't start with 'ipfs://'
 }

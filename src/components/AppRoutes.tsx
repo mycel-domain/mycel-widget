@@ -21,11 +21,7 @@ export function AppRoutes(props: PropTypes) {
     },
     {
       path: navigationRoutes.fromChain,
-      element: (
-        <SelectChainPage
-          supportedChains={config?.from?.blockchains}
-        />
-      ),
+      element: <SelectChainPage supportedChains={config?.from?.blockchains} />,
     },
     {
       path: navigationRoutes.fromToken,

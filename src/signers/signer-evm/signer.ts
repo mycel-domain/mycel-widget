@@ -4,7 +4,7 @@ import {
 } from '@ethersproject/abstract-provider';
 import type { GenericSigner } from '../../types';
 import { EvmTransaction } from '../../types/api/main/txs';
-import { ethers, providers } from 'ethers';
+import { providers } from 'ethers';
 import { cleanEvmError, getTenderlyError, waitMs } from './helper';
 import {
   RPCErrorCode as RangoRPCErrorCode,

@@ -2,7 +2,6 @@ import {
   Alert,
   BottomLogo,
   Button,
-  Typography,
   Header,
   HeaderButtons,
   TokenAmountForm,
@@ -32,6 +31,7 @@ import {
 } from "../../types/api/main";
 import { useTransactionStore } from "../../store/transaction";
 import { parseAptos } from "../../utils/common";
+import erc20_abi from "../../constants/erc20_abi.json";
 
 const Container = styled("div", {
   display: "flex",
@@ -53,6 +53,10 @@ const Footer = styled("div", {
   flexDirection: "column",
   width: "100%",
   paddingTop: "$16",
+});
+
+const SpacerY = styled("div", {
+  height: "$16",
 });
 
 interface HomePanelProps {
@@ -113,23 +117,17 @@ export function HomePanel({
   onChainClick,
   onTokenClick,
   connectedWallets,
-  errorMessage,
-  hasLimitError,
   isSending,
-  swap,
-  fromAmountRangeError,
-  recommendation,
-  swapFromAmount,
 }: HomePanelProps) {
   const { getSigners } = useWallets();
   const [txHash, setTxHash] = useState<string>();
   const [error, setError] = useState<string>("");
+  const domainName = useTransactionStore.use.domainName();
 
   const sendTx = async (type: TransactionType) => {
     const signer = getSigners(connectedWallets[0].walletType).getSigner(type);
-    // Web3Provider.provider
-    const provider = signer.provider.provider;
-
+    const provider = signer.provider.provider; // Web3Provider.provider
+    const signerAddress = await signer.signer.getAddress();
     useTransactionStore.setState({ isSending: true });
 
     if (type === "EVM") {
@@ -137,7 +135,11 @@ export function HomePanel({
       try {
         await provider.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: hex_chainId }],
+          params: [
+            {
+              chainId: hex_chainId,
+            },
+          ],
         });
       } catch (switchError) {
         if (switchError.code === 4902) {
@@ -158,29 +160,54 @@ export function HomePanel({
           });
         }
       }
-      const signerAddress = await signer.signer.getAddress();
-      try {
-        const ethTx = {
-          blockChain: "Ethreum",
-          isApprovalTx: false,
-          from: signerAddress,
-          to: toAddress,
-          data: null,
-          value: ethers.utils.parseEther(inputAmount),
-          gasLimit: "0x714b3",
-          gasPrice: null,
-          nonce: null,
-          type: "EVM",
-        };
-        const { hash } = await signer.signAndSendTx(
-          ethTx as any,
-          signerAddress,
-          fromChain?.chainId as string
-        );
 
-        if (hash) {
-          setTxHash(hash);
-          useTransactionStore.setState({ isSending: false });
+      try {
+        if (fromToken?.isNative) {
+          // when selected token is native
+          const ethTx = {
+            blockChain: "Ethreum",
+            isApprovalTx: false,
+            from: signerAddress,
+            to: toAddress,
+            data: null,
+            value: ethers.utils.parseEther(inputAmount),
+            gasLimit: "0x714b3",
+            gasPrice: null,
+            nonce: null,
+            type: "EVM",
+          };
+
+          const { hash } = await signer.signAndSendTx(
+            ethTx as any,
+            signerAddress,
+            fromChain?.chainId as string
+          );
+
+          if (hash) {
+            setTxHash(hash);
+            useTransactionStore.setState({
+              isSending: false,
+            });
+          }
+        } else {
+          // when selected token is non-native
+          const tokenContract = new ethers.Contract(
+            fromToken?.address as string,
+            erc20_abi,
+            signer.signer
+          );
+
+          const { hash } = await tokenContract.transfer(
+            toAddress,
+            ethers.utils.parseEther(inputAmount)
+          );
+
+          if (hash) {
+            setTxHash(hash);
+            useTransactionStore.setState({
+              isSending: false,
+            });
+          }
         }
       } catch (e) {
         console.log(e);
@@ -313,43 +340,43 @@ export function HomePanel({
         </>
       </FromContainer>
       <NameResolutionForm chain={fromChain} setError={setError} />
-      {(errorMessage || hasLimitError(bestRoute)) && (
-        <Alerts>
-          {errorMessage && <Alert type="error">{errorMessage}</Alert>}
-          {hasLimitError(bestRoute) && (
-            <Alert type="error" title={`${swap?.swapperId} Limit`}>
-              <>
-                <Typography variant="body2">
-                  {`${fromAmountRangeError}, Yours: ${swapFromAmount} ${swap?.from.symbol}`}
-                </Typography>
-                <Typography variant="body2">{recommendation}</Typography>
-              </>
-            </Alert>
-          )}
-        </Alerts>
-      )}
       <Footer>
-        {fromChain?.info?.transactionUrl && txHash ? (
-          <Alert type="success">
-            <div style={{ fontSize: "small", overflowWrap: "anywhere" }}>
-              Success:{" "}
-              <a
-                style={{ color: "#0000ff" }}
-                target={"_blank"}
-                href={fromChain?.info?.transactionUrl + txHash}
+        {fromChain?.info?.transactionUrl && txHash && (
+          <>
+            <Alert type="success">
+              <div
+                style={{
+                  fontSize: "small",
+                  overflowWrap: "anywhere",
+                }}
               >
-                {txHash}
-              </a>
-            </div>
-          </Alert>
-        ) : error ? (
-          <Alert type="error">
-            <p style={{ fontSize: "small", overflowWrap: "anywhere" }}>
-              {error}
-            </p>
-          </Alert>
-        ) : (
-          <></>
+                Confirm:{" "}
+                <a
+                  style={{ color: "#0000ff" }}
+                  target={"_blank"}
+                  href={fromChain?.info?.transactionUrl + txHash}
+                >
+                  {txHash}
+                </a>
+              </div>
+            </Alert>
+            <SpacerY />
+          </>
+        )}
+        {domainName && error && (
+          <>
+            <Alert type="error">
+              <p
+                style={{
+                  fontSize: "small",
+                  overflowWrap: "anywhere",
+                }}
+              >
+                {error}
+              </p>
+            </Alert>
+            <SpacerY />
+          </>
         )}
         <Button
           type="primary"
