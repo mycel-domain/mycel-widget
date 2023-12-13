@@ -5,6 +5,8 @@ import { Typography } from "../Typography";
 import { TokenWithAmount } from "./TokenList";
 import { Image } from "../common";
 import { Token } from "../../types/api/main";
+import { replaceIPFSUrlToHTTP } from "../../utils/common";
+import { useTransactionStore } from "../../store/transaction";
 
 const TokenImageContainer = styled("div", {
   paddingRight: "$16",
@@ -30,6 +32,8 @@ interface PropTypes {
 
 export function TokenItem(props: PropTypes) {
   const { token, style, onClick, selected } = props;
+  const fromChain = useTransactionStore.use.fromChain();
+
   return (
     <div
       style={{
@@ -50,7 +54,13 @@ export function TokenItem(props: PropTypes) {
         type={selected ? "primary" : undefined}
         prefix={
           <TokenImageContainer>
-            <Image src={token.logoURI} size={32} />
+            <Image
+              src={replaceIPFSUrlToHTTP(token.logoURI)}
+              size={32}
+              onError={({ currentTarget }) => {
+                currentTarget.src = fromChain?.logo as string;
+              }}
+            />
           </TokenImageContainer>
         }
         suffix={
