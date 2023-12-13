@@ -154,13 +154,8 @@ export const config = {
   },
   multiWallets: false,
   mycelEnv: {
-    apiURL: "http://localhost:1317",
-    rpcURL: "http://localhost:26657",
+    apiURL: "http://seed.dev.mycel.domains:1317",
+    rpcURL: "http://seed.dev.mycel.domains:26657",
     prefix: "mycel",
   },
-  // mycelEnv: {
-  //   apiURL: "http://seed.dev.mycel.domains:1317",
-  //   rpcURL: "http://seed.dev.mycel.domains:26657",
-  //   prefix: "mycel",
-  // },
 };
